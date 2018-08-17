@@ -1,0 +1,38 @@
+#!/usr/bin/env php
+<?php
+
+use CoRex\Composer\Repository\Application;
+use CoRex\Composer\Repository\Config;
+use CoRex\Composer\Repository\Constants;
+use CoRex\Support\System\Console;
+use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+
+$autoloadFilename = dirname(dirname(dirname(__DIR__))) . '/vendor/autoload.php';
+if (!file_exists($autoloadFilename)) {
+    die($autoloadFilename . ' not found.' . "\n");
+}
+require_once($autoloadFilename);
+
+try {
+
+    // Add event listener to check if initialized (not 'init' command').
+    $eventDispatcher = new EventDispatcher();
+    $eventDispatcher->addListener(ConsoleEvents::COMMAND, function (ConsoleCommandEvent $event) {
+        if (Config::load()->isValid()) {
+            return;
+        }
+        $command = $event->getInput()->getArgument('command');
+        if ($command != 'init') {
+            Console::error(Constants::TITLE . ' not initialized. Run command "init".');
+            exit;
+        }
+    });
+
+    $application = new Application();
+    $application->setDispatcher($eventDispatcher);
+    $application->run();
+} catch (\Exception $e) {
+    Console::error($e->getMessage());
+}
