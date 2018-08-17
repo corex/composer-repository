@@ -63,9 +63,6 @@ class Application extends SatisApplication
 
         // Show commands.
         $commands[] = new Commands\Show\AllCommand();
-        $commands[] = new Commands\Show\ChangelogCommand();
-        $commands[] = new Commands\Show\LicenseCommand();
-        $commands[] = new Commands\Show\ReadmeCommand();
         $commands[] = new Commands\Show\PackagesCommand();
         $commands[] = new Commands\Show\VendorsCommand();
         $commands[] = new Commands\Show\VersionsCommand();
