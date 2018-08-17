@@ -62,8 +62,8 @@ if (in_array('readme', $allowedTabs)) {
 if (in_array('changelog', $allowedTabs)) {
 	$tabs[] = Element::button('Changelog', $action == 'changelog', $baseParams + ['action' => 'changelog']);
 }
-if (in_array('composer.json', $allowedTabs)) {
-	$tabs[] = Element::button('composer.json', $action == 'composer.json', $baseParams + ['action' => 'composer.json']);
+if (in_array('composer', $allowedTabs)) {
+	$tabs[] = Element::button('Composer', $action == 'composer', $baseParams + ['action' => 'composer']);
 }
 if (in_array('files', $allowedTabs)) {
 	$tabs[] = Element::button('Files', $action == 'files', $baseParams + ['action' => 'files']);
@@ -79,12 +79,12 @@ if (in_array('files', $allowedTabs)) {
 	<br><br>
 
 	<!-- Details -->
-    <?php if ($action == 'details'): ?>
+    <?php if ($action == 'details' && in_array('details', $allowedTabs)): ?>
         <?= Element::propertiesTable($propertiesTable) ?>
     <?php endif; ?>
 
 	<!-- readme -->
-    <?php if ($action == 'readme'): ?>
+    <?php if ($action == 'readme' && in_array('readme', $allowedTabs)): ?>
         <?php
         $content = $packageVersion->getMap()->getReadmeContent();
         try {
@@ -102,7 +102,7 @@ if (in_array('files', $allowedTabs)) {
     <?php endif; ?>
 
 	<!-- changelog -->
-    <?php if ($action == 'changelog'): ?>
+    <?php if ($action == 'changelog' && in_array('changelog', $allowedTabs)): ?>
         <?php
         $content = $packageVersion->getMap()->getChangelogContent();
         try {
@@ -120,7 +120,7 @@ if (in_array('files', $allowedTabs)) {
     <?php endif; ?>
 
 	<!-- composer.json -->
-    <?php if ($action == 'composer.json'): ?>
+    <?php if ($action == 'composer' && in_array('composer', $allowedTabs)): ?>
         <?php
         $content = trim($packageVersion->getComposerJson());
         print(Element::code($content));
@@ -128,7 +128,7 @@ if (in_array('files', $allowedTabs)) {
     <?php endif; ?>
 
 	<!-- files -->
-    <?php if ($action == 'files'): ?>
+    <?php if ($action == 'files' && in_array('files', $allowedTabs)): ?>
         <?php
         $filenames = $packageVersion->getArchive()->getArchiveFilenames();
         foreach ($filenames as $filename) {
@@ -139,7 +139,7 @@ if (in_array('files', $allowedTabs)) {
     <?php endif; ?>
 
 	<!-- fileshow -->
-    <?php if ($action == 'fileshow'): ?>
+    <?php if ($action == 'fileshow' && in_array('files', $allowedTabs)): ?>
         <?php
         $filename = urldecode($filename);
         print('<h4>' . $filename . '</h4>');

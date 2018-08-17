@@ -10,7 +10,7 @@ class Tabs
     const DETAILS = 'details';
     const README = 'readme';
     const CHANGELOG = 'changelog';
-    const COMPOSERJSON = 'composer.json';
+    const COMPOSER = 'composer';
     const FILES = 'files';
 
     /**

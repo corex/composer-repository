@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1
+
+### Fixed
+- Fixed allowed tabs.
+
 ## 0.1.0
 
 ### Added
