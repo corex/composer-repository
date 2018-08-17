@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.0
+
+### Added
+- Added option to set allowed tabs for specific signatures through command config:tabs.
+
 ## 0.0.5
 
 ### Fixed

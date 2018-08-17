@@ -55,6 +55,7 @@ class Application extends SatisApplication
         $commands[] = new Commands\Config\NameCommand();
         $commands[] = new Commands\Config\PathCommand();
         $commands[] = new Commands\Config\ShowCommand();
+        $commands[] = new Commands\Config\TabsCommand();
 
         // Package commands.
         $commands[] = new Commands\Package\AddNameCommand();

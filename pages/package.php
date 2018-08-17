@@ -3,6 +3,7 @@
 use CoRex\Composer\Repository\Browser\Breadcrumbs;
 use CoRex\Composer\Repository\Browser\Element;
 use CoRex\Composer\Repository\Browser\Url;
+use CoRex\Composer\Repository\Helpers\Tabs;
 use CoRex\Composer\Repository\Services\PackageService;
 use CoRex\Support\System\Input;
 
@@ -48,17 +49,33 @@ Breadcrumbs::add($signature, ['page' => 'package', 'signature' => $signature]);
 
 // Base params.
 $baseParams = ['page' => 'package', 'signature' => $signature, 'version' => $version];
+
+// Tabs.
+$tabs = [];
+$allowedTabs = Tabs::getSignatureAllowed($signature);
+if (in_array('details', $allowedTabs)) {
+	$tabs[] = Element::button('Details', $action == 'details', $baseParams + ['action' => 'details']);
+}
+if (in_array('readme', $allowedTabs)) {
+	$tabs[] = Element::button('Readme', $action == 'readme', $baseParams + ['action' => 'readme']);
+}
+if (in_array('changelog', $allowedTabs)) {
+	$tabs[] = Element::button('Changelog', $action == 'changelog', $baseParams + ['action' => 'changelog']);
+}
+if (in_array('composer.json', $allowedTabs)) {
+	$tabs[] = Element::button('composer.json', $action == 'composer.json', $baseParams + ['action' => 'composer.json']);
+}
+if (in_array('files', $allowedTabs)) {
+	$tabs[] = Element::button('Files', $action == 'files', $baseParams + ['action' => 'files']);
+}
+
 ?>
 <?= Breadcrumbs::render() ?>
 
 <?php if ($packageService->exists()): ?>
 
 	<?= Element::dropdown($versions, $version, $baseParams, true, 10) ?>&nbsp;
-    <?= Element::button('Details', $action == 'details', $baseParams + ['action' => 'details']) ?>
-    <?= Element::button('Readme', $action == 'readme', $baseParams + ['action' => 'readme']) ?>
-    <?= Element::button('Changelog', $action == 'changelog', $baseParams + ['action' => 'changelog']) ?>
-    <?= Element::button('composer.json', $action == 'composer.json', $baseParams + ['action' => 'composer.json']) ?>
-    <?= Element::button('Files', $action == 'files', $baseParams + ['action' => 'files']) ?>
+    <?= ' ' . implode(' ', $tabs) ?>
 	<br><br>
 
 	<!-- Details -->

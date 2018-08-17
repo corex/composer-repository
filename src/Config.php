@@ -220,6 +220,65 @@ class Config extends Json
     }
 
     /**
+     * Get tab signatures.
+     *
+     * @return array
+     */
+    public function getTabSignatures()
+    {
+        $configTabs = $this->get('tabs', []);
+        return array_keys($configTabs);
+    }
+
+    /**
+     * Get signature tabs.
+     *
+     * @param string $signature
+     * @return array
+     */
+    public function getSignatureTabs($signature)
+    {
+        $configTabs = $this->get('tabs', []);
+        if (isset($configTabs[$signature])) {
+            return $configTabs[$signature];
+        }
+        return [];
+    }
+
+    /**
+     * Set signature tabs.
+     *
+     * @param string $signature
+     * @param array $tabs
+     * @return $this
+     */
+    public function setSignatureTabs($signature, array $tabs)
+    {
+        $configTabs = $this->get('tabs', []);
+        if (count($tabs) > 0) {
+            $configTabs[$signature] = $tabs;
+        } else {
+            if (array_key_exists($signature, $configTabs)) {
+                unset($configTabs[$signature]);
+            }
+        }
+        $this->set('tabs', $configTabs);
+        return $this;
+    }
+
+    /**
+     * Has signature tab.
+     *
+     * @param string $signature
+     * @param string $tab
+     * @return boolean
+     */
+    public function hasSignatureTab($signature, $tab)
+    {
+        return in_array($tab, $this->getSignatureTabs($signature));
+    }
+
+    /**
      * Is valid.
      *
      * @return boolean

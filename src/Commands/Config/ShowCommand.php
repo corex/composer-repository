@@ -40,7 +40,7 @@ class ShowCommand extends Command
             'Path' => $config->getPath()
         ]);
 
-        // Render result.
+        // Packages.
         $packages = $config->getPackages();
         $result = [];
         foreach ($packages as $signature => $details) {
@@ -60,6 +60,26 @@ class ShowCommand extends Command
             Console::table($result, ['Package signature', 'Repository url']);
         } else {
             Message::info('No packages registered.');
+        }
+
+        // Tabs.
+        $tabSignatures = $config->getTabSignatures();
+        $result = [];
+        foreach ($tabSignatures as $tabSignature) {
+            $allowedTabs = $config->getSignatureTabs($tabSignature);
+            $result[] = [
+                'signature' => $tabSignature,
+                'allowedTabs' => implode(', ', $allowedTabs)
+            ];
+        }
+        sort($result);
+
+        Message::blank();
+        if (count($result) > 0) {
+            Message::info('Allowed tabs');
+            Console::table($result, ['Package signature', 'Allowed tabs']);
+        } else {
+            Message::info('No allowed tabs registered.');
         }
     }
 }
