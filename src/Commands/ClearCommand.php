@@ -33,10 +33,15 @@ class ClearCommand extends Command
     {
         Message::header($this->getDescription());
 
+        $config = Config::load();
+        if ($config->getPath() === null) {
+            Message::error('Path not set. Run command "config:path" to set path (must be accessible via web).');
+        }
+
         Message::warning('Warning! This will clear all data and they need to be rebuild.');
         if (Console::confirm('Are you sure', true, false)) {
-            Directory::clean(Config::load()->getPath());
-            File::delete(Config::load()->getPath(['.htaccess']));
+            Directory::clean($config->getPath());
+            File::delete($config->getPath(['.htaccess']));
             Message::info('Data cleared.');
         } else {
             Message::info('Data not cleared.');

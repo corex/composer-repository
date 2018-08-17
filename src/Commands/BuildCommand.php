@@ -41,11 +41,17 @@ class BuildCommand extends SatisBuildCommand
     {
         Message::header($this->getDescription());
 
+        $config = Config::load();
+        if ($config->getPath() === null) {
+            Message::error('Path not set. Run command "config:path" to set path (must be accessible via web).');
+        }
+
+        // Create browser files.
+        Message::info('Creating basic browser files.');
         $vendorDirectory = PackagistService::getVendorDirectory();
         $this->createBrowserFiles($vendorDirectory);
 
         // Load configuration.
-        $config = Config::load();
         $path = $config->getPath();
         if ($path === null) {
             Message::error('Path not set. Run command "config:path".');

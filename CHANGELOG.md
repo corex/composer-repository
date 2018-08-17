@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.4
+
+### Fixed
+- Checking for path on build- or clear-commands.
+
 ## 0.0.3
 
 ### Added
