@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.5
+
+### Fixed
+- Better detection of vendor directory.
+
 ## 0.0.4
 
 ### Fixed

@@ -48,7 +48,7 @@ class BuildCommand extends SatisBuildCommand
 
         // Create browser files.
         Message::info('Creating basic browser files.');
-        $vendorDirectory = PackagistService::getVendorDirectory();
+        $vendorDirectory = Path::packages();
         $this->createBrowserFiles($vendorDirectory);
 
         // Load configuration.

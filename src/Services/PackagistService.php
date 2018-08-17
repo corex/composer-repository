@@ -11,17 +11,6 @@ use Composer\Repository\VcsRepository;
 class PackagistService
 {
     /**
-     * Get vendor directory.
-     *
-     * @return string
-     */
-    public static function getVendorDirectory()
-    {
-        $composer = Factory::create(new NullIO(), array());
-        return $composer->getConfig()->get('vendor-dir');
-    }
-
-    /**
      * Get packagist package.
      *
      * @param string $signature
