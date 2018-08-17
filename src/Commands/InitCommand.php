@@ -4,6 +4,8 @@ namespace CoRex\Composer\Repository\Commands;
 
 use CoRex\Composer\Repository\Config;
 use CoRex\Composer\Repository\Message;
+use CoRex\Composer\Repository\Path;
+use CoRex\Filesystem\Directory;
 use CoRex\Helpers\Str;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -39,10 +41,16 @@ class InitCommand extends Command
         $name = $input->getArgument('name');
         $homepage = rtrim($input->getArgument('homepage'), '/');
 
+        // Make sure config directory exists.
+        $configPath = Path::root(['config']);
+        if (!Directory::exist($configPath)) {
+            Directory::make($configPath);
+        }
+
         $config = Config::load();
         if ($config->exist()) {
             Message::info($config->getName() . ' already initialized.');
-            return 1;
+            return;
         }
         $config->setName($name);
         $config->setHomepage($homepage);
