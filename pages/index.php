@@ -18,8 +18,10 @@ try {
         $packageService = $packagesService->getPackage($signature);
         $latestVersion = $packageService->getLatestVersion();
         $packageVersion = $packageService->getVersionEntity($latestVersion);
-        $link = Url::link($signature, ['page' => 'package', 'signature' => $signature]);
-        $packages[$link] = $packageVersion->getValue('description');
+        if ($packageVersion !== null) {
+            $link = Url::link($signature, ['page' => 'package', 'signature' => $signature]);
+            $packages[$link] = $packageVersion->getValue('description');
+        }
     }
 } catch (\Exception $e) {
     print(Element::error('Not possible to get list of registered packages.'));
