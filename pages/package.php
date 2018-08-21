@@ -37,6 +37,7 @@ if ($packageService->exists()) {
         'Version' => $version,
         'Description' => $packageVersion->getValue('description'),
         'Type' => $packageVersion->getValue('type', 'library'),
+        'Source' => $packageVersion->getValue('source.url'),
         'Require' => implode('<br>', $requires),
         'Homepage' => $homepage,
         'Keywords' => implode(', ', $packageVersion->getValue('keywords', []))
