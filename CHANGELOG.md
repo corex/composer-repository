@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1
+
+### Fixed
+- Added "white-space:nowrap;" so that package-name does not wrap on page packages.
+
 ## 0.2.0
 
 ### Added

@@ -62,7 +62,7 @@ class Element
         $result[] = '<tbody>';
         foreach ($properties as $property => $value) {
             $result[] = '<tr>';
-            $result[] = '<th>' . $property . '</th><td>' . $value . '</td>';
+            $result[] = '<th style="white-space:nowrap;">' . $property . '</th><td>' . $value . '</td>';
             $result[] = '</tr>';
         }
         $result[] = '</tbody>';
