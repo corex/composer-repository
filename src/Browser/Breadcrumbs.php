@@ -8,7 +8,6 @@ use CoRex\Support\System\Session;
 class Breadcrumbs
 {
     const SESSION_NAMESPACE = 'composer-repository';
-    const HOME_TITLE = 'Packages';
 
     /**
      * Clear.
@@ -86,7 +85,6 @@ class Breadcrumbs
         $result = [];
         $result[] = '<nav aria-label="breadcrumb">';
         $result[] = '<ol class="breadcrumb">';
-        $result[] = self::li(self::HOME_TITLE, [], count($items) == 0);
         $index = 0;
         foreach ($items as $item) {
             $title = $item['title'];

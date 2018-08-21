@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0
+
+### Added
+- Added source of package on page package.
+- Added page location to show composer repository location for "composer.json".
+
 ## 0.1.1
 
 ### Fixed

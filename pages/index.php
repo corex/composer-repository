@@ -9,6 +9,7 @@ use CoRex\Composer\Repository\Services\PackagesService;
 $signatures = Config::load()->getPackageSignatures();
 
 Breadcrumbs::clear();
+Breadcrumbs::add('Packages', []);
 
 try {
     $packagesService = PackagesService::load();
