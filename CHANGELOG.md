@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0
+
+### Added
+- Added build ordering.
+
 ## 0.2.2
 
 ### Fixed
