@@ -39,6 +39,9 @@ class BuildCommand extends SatisBuildCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // Set quiet if specified.
+        Message::setQuiet($output->isQuiet());
+
         Message::header($this->getDescription());
 
         $config = Config::load();

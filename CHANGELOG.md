@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.2
+
+### Fixed
+- Fixed quiet option.
+
 ## 0.3.1
 
 ### Changed

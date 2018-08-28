@@ -6,6 +6,18 @@ use CoRex\Support\System\Console;
 
 class Message
 {
+    private static $isQuiet = false;
+
+    /**
+     * Set quiet.
+     *
+     * @param boolean $isQuiet
+     */
+    public static function setQuiet($isQuiet)
+    {
+        self::$isQuiet = $isQuiet;
+    }
+
     /**
      * Error (stops code = exit).
      *
@@ -13,7 +25,9 @@ class Message
      */
     public static function error($message)
     {
-        Console::error($message);
+        if (!self::$isQuiet) {
+            Console::error($message);
+        }
         exit;
     }
 
@@ -24,7 +38,9 @@ class Message
      */
     public static function header($message)
     {
-        Console::header(Config::load()->getName() . ' - ' . $message);
+        if (!self::$isQuiet) {
+            Console::header(Config::load()->getName() . ' - ' . $message);
+        }
     }
 
     /**
@@ -34,7 +50,9 @@ class Message
      */
     public static function info($message)
     {
-        Console::info($message);
+        if (!self::$isQuiet) {
+            Console::info($message);
+        }
     }
 
     /**
@@ -44,7 +62,9 @@ class Message
      */
     public static function warning($message)
     {
-        Console::warning($message);
+        if (!self::$isQuiet) {
+            Console::warning($message);
+        }
     }
 
     /**
@@ -54,7 +74,9 @@ class Message
      */
     public static function writeln($message)
     {
-        Console::writeln($message);
+        if (!self::$isQuiet) {
+            Console::writeln($message);
+        }
     }
 
     /**
@@ -64,8 +86,10 @@ class Message
      */
     public static function blank($numberOfBlankLines = 1)
     {
-        for ($c1 = 0; $c1 < $numberOfBlankLines; $c1++) {
-            Console::writeln('');
+        if (!self::$isQuiet) {
+            for ($c1 = 0; $c1 < $numberOfBlankLines; $c1++) {
+                Console::writeln('');
+            }
         }
     }
 }
