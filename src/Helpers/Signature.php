@@ -48,14 +48,19 @@ class Signature
      */
     public static function split($signature)
     {
-        $parts = [];
-        if ((string)$signature != '') {
-            $signature = trim($signature, '/');
-            $parts = explode('/', (string)$signature);
-        }
-        return [
-            'vendor' => isset($parts[0]) ? $parts[0] : null,
-            'package' => isset($parts[1]) ? $parts[1] : null
+        $parts = [
+            'vendor' => null,
+            'package' => null
         ];
+        if ((string)$signature != '') {
+            $signatureParts = explode('/', (string)$signature);
+            if (count($signatureParts) == 2) {
+                $parts = [
+                    'vendor' => isset($signatureParts[0]) ? $signatureParts[0] : null,
+                    'package' => isset($signatureParts[1]) ? $signatureParts[1] : null
+                ];
+            }
+        }
+        return $parts;
     }
 }

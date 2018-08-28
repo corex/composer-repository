@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1
+
+### Changed
+- Commands package:add-signature and package:add-url combined into package:add.
+
 ## 0.3.0
 
 ### Added
