@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.3
+
+### Fixed
+- Fixed build counter.
+
 ## 0.3.2
 
 ### Fixed

@@ -97,14 +97,14 @@ $config = Config::load();
                         runningTime = data.runningTime;
                     }
 
-                    let buildText = 'Building idle';
+                    let buildText = '(' + orderCount + ') Building idle';
                     let badgeClass = 'badge-success';
                     if (isRunning) {
-                        buildText = 'Build started at ' + runningTime;
+                        buildText = '(' + orderCount + ') Build started at ' + runningTime + '.';
                         badgeClass = 'badge-warning';
                     } else {
                         if (orderCount > 0) {
-                            buildText = 'Build starting soon (' + orderCount + ' orders)';
+                            buildText = '(' + orderCount + ') Build starting soon.';
                             badgeClass = 'badge-info';
                         }
                     }
