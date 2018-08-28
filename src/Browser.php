@@ -56,7 +56,13 @@ class Browser
         $this->template->set('homeUrl', $this->config->getHomepage());
         $page = Input::getQuery('page', 'index');
         $pageContent = $this->getPage($page);
-        $this->template->set('content', $pageContent);
+        if ($page != 'services') {
+            $this->template->set('content', $pageContent);
+        } else {
+            $response = $this->getPage('services');
+            print($response);
+            exit;
+        }
     }
 
     /**

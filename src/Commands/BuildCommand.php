@@ -5,11 +5,11 @@ namespace CoRex\Composer\Repository\Commands;
 use Composer\Satis\Console\Command\BuildCommand as SatisBuildCommand;
 use CoRex\Composer\Repository\Browser;
 use CoRex\Composer\Repository\Config;
+use CoRex\Composer\Repository\Helpers\Build;
 use CoRex\Composer\Repository\Message;
 use CoRex\Composer\Repository\Path;
 use CoRex\Composer\Repository\Services\PackageService;
 use CoRex\Composer\Repository\Services\PackagesService;
-use CoRex\Composer\Repository\Services\PackagistService;
 use CoRex\Filesystem\Directory;
 use CoRex\Filesystem\File;
 use CoRex\Filesystem\Json;
@@ -66,6 +66,15 @@ class BuildCommand extends SatisBuildCommand
         if (count($requires) == 0) {
             Message::error('Cannot build. No packages added.');
         }
+
+        // Check if orders are available.
+        $order = Build::getOrder();
+        if ($order === null) {
+            Message::info('No orders.');
+            return 0;
+        }
+
+        Build::markRunning();
 
         // Write temp "satis.json".
         $buildFilename = File::getTempFilename(Directory::temp(), 'satis-', 'json');
@@ -128,6 +137,8 @@ class BuildCommand extends SatisBuildCommand
         }
 
         Message::info('Building and mapping done.');
+
+        Build::markRunningDone();
 
         return $result;
     }
