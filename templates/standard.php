@@ -41,9 +41,12 @@ $config = Config::load();
 			<li class="nav-item">
 				<a class="nav-link" href="/">Packages</a>
 			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="/?page=location">Location</a>
-			</li>
+            <li class="nav-item">
+                <a class="nav-link" href="/?page=location">Location</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" target="_blank" href="<?= Url::packagist() ?>">Packagist</a>
+            </li>
 		</ul>
 	</div>
 

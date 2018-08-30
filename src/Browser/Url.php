@@ -6,6 +6,9 @@ use CoRex\Composer\Repository\Config;
 
 class Url
 {
+    const PACKAGIST_URL = 'https://packagist.org/';
+    const PACKAGIST_PACKAGE_URL = 'https://packagist.org/packages/{signature}';
+
     /**
      * Home.
      *
@@ -14,6 +17,21 @@ class Url
     public static function home()
     {
         return self::build();
+    }
+
+    /**
+     * Packagist url.
+     *
+     * @param string $signature
+     * @return string
+     */
+    public static function packagist($signature = null)
+    {
+        $url = self::PACKAGIST_URL;
+        if ($signature !== null) {
+            $url = str_replace('{signature}', $signature, self::PACKAGIST_PACKAGE_URL);
+        }
+        return $url;
     }
 
     /**

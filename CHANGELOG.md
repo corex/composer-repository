@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.4
+
+### Added
+- Added link to Packagist on standard template.
+
 ## 0.3.3
 
 ### Fixed
