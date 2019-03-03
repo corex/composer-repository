@@ -4,8 +4,8 @@ namespace CoRex\Composer\Repository\Commands\Package;
 
 use CoRex\Composer\Repository\Config;
 use CoRex\Composer\Repository\Helpers\Build;
+use CoRex\Composer\Repository\Helpers\Console;
 use CoRex\Composer\Repository\Helpers\Signature;
-use CoRex\Composer\Repository\Message;
 use CoRex\Composer\Repository\Services\PackagistService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -32,7 +32,7 @@ class AddCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Message::header($this->getDescription());
+        Console::header($this->getDescription());
 
         $signatureOrUrl = $input->getArgument('signature-or-repository-url');
 
@@ -48,7 +48,7 @@ class AddCommand extends Command
         // Order build.
         if ($isAdded) {
             Build::order();
-            Message::info('Build ordered.');
+            Console::info('Build ordered.');
         }
     }
 
@@ -60,22 +60,22 @@ class AddCommand extends Command
      */
     private function addPackageBySignature($signature)
     {
-        Message::info('Adding package ' . $signature);
+        Console::info('Adding package ' . $signature);
 
         if (!PackagistService::packagistHasPackage($signature)) {
-            Message::error('Package ' . $signature . ' not found.');
+            Console::throwError('Package ' . $signature . ' not found.');
         }
 
         // Add package.
-        Message::blank();
+        Console::br();
         $config = Config::load();
         $isAdded = $config->addPackageSignature($signature);
         if ($isAdded) {
             $config->save();
-            Message::info('Package added.');
+            Console::info('Package added.');
             return true;
         } else {
-            Message::error('Package already added.');
+            Console::error('Package already added.');
             return false;
         }
     }
@@ -87,24 +87,24 @@ class AddCommand extends Command
      */
     private function addPackageByUrl($repositoryUrl)
     {
-        Message::info('Adding package ' . $repositoryUrl);
+        Console::info('Adding package ' . $repositoryUrl);
 
         $composerInformation = PackagistService::getRepositoryInformationByUrl($repositoryUrl);
         if (empty($composerInformation['name'])) {
-            Message::error('Not a valid composer package.');
+            Console::error('Not a valid composer package.');
         }
         $signature = $composerInformation['name'];
 
         // Add package.
-        Message::blank();
+        Console::br();
         $config = Config::load();
         $isAdded = $config->addPackageUrl($signature, $repositoryUrl);
         if ($isAdded) {
             $config->save();
-            Message::info('Package added.');
+            Console::info('Package added.');
             return true;
         } else {
-            Message::error('Package already added.');
+            Console::error('Package already added.');
             return false;
         }
     }

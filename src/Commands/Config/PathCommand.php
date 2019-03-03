@@ -3,8 +3,8 @@
 namespace CoRex\Composer\Repository\Commands\Config;
 
 use CoRex\Composer\Repository\Config;
-use CoRex\Composer\Repository\Message;
-use CoRex\Support\System\Directory;
+use CoRex\Composer\Repository\Helpers\Console;
+use CoRex\Filesystem\Directory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,14 +34,14 @@ class PathCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Message::header($this->getDescription());
+        Console::header($this->getDescription());
 
         $path = rtrim(realpath($input->getArgument('path')), '/');
         if (!Directory::exist($path)) {
-            Message::error('Path ' . $path . ' does not exist.');
+            Console::throwError('Path ' . $path . ' does not exist.');
         }
         Config::load()->setPath($path)->save();
 
-        Message::info('Path ' . $path . ' set.');
+        Console::info('Path ' . $path . ' set.');
     }
 }

@@ -4,7 +4,7 @@
 use CoRex\Composer\Repository\Application;
 use CoRex\Composer\Repository\Config;
 use CoRex\Composer\Repository\Constants;
-use CoRex\Support\System\Console;
+use CoRex\Terminal\Console;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\EventDispatcher\EventDispatcher;

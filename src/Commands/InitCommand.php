@@ -3,10 +3,10 @@
 namespace CoRex\Composer\Repository\Commands;
 
 use CoRex\Composer\Repository\Config;
-use CoRex\Composer\Repository\Message;
-use CoRex\Composer\Repository\Path;
+use CoRex\Composer\Repository\Helpers\Path;
 use CoRex\Filesystem\Directory;
 use CoRex\Helpers\Str;
+use CoRex\Terminal\Console;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,8 +23,10 @@ class InitCommand extends Command
         $this->setDescription('Initialize');
         $this->setHelp('');
         $this->setDefinition([
-            new InputArgument('name', InputArgument::REQUIRED, 'Name of repository.'),
-            new InputArgument('homepage', InputArgument::REQUIRED, 'Homepage of repository.')
+            new InputArgument('name', InputArgument::REQUIRED, 'Name/Title of repository.'),
+            new InputArgument('package-name', InputArgument::REQUIRED,
+                'Package-name of repository i.e. "corex/composer-repository".'),
+            new InputArgument('homepage', InputArgument::REQUIRED, 'Homepage of repository (url).')
         ]);
     }
 
@@ -36,9 +38,10 @@ class InitCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Message::header($this->getDescription());
+        Console::header($this->getDescription());
 
         $name = $input->getArgument('name');
+        $packageName = $input->getArgument('package-name');
         $homepage = rtrim($input->getArgument('homepage'), '/');
 
         // Make sure config directory exists.
@@ -49,18 +52,19 @@ class InitCommand extends Command
 
         $config = Config::load();
         if ($config->exist()) {
-            Message::info($config->getName() . ' already initialized.');
+            Console::info($config->getName() . ' already initialized.');
             return;
         }
         $config->setName($name);
+        $config->setPackageName($packageName);
         $config->setHomepage($homepage);
         $config->save();
 
         if (!Str::startsWith($homepage, 'https://')) {
-            Message::warning('Warning: homepage specified is not secure (https).');
-            Message::blank();
+            Console::warning('Warning: homepage specified is not secure (https).');
+            Console::br();
         }
 
-        Message::info($config->getName() . ' initialized.');
+        Console::info($config->getName() . ' initialized.');
     }
 }

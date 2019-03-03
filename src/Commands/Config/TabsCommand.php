@@ -2,8 +2,10 @@
 
 namespace CoRex\Composer\Repository\Commands\Config;
 
+use CoRex\Composer\Repository\Exceptions\SignatureException;
+use CoRex\Composer\Repository\Helpers\Console;
+use CoRex\Composer\Repository\Helpers\Signature;
 use CoRex\Composer\Repository\Helpers\Tabs;
-use CoRex\Composer\Repository\Message;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -36,9 +38,15 @@ class TabsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Message::header($this->getDescription());
+        Console::header($this->getDescription());
 
         $signature = $input->getArgument('signature');
+
+        // Check signature if valid.
+        if (!Signature::isValid($signature)) {
+            throw new SignatureException('Signature ' . $signature . ' not valid.');
+        }
+
         $tabs = $input->getArgument('tabs');
 
         if ($tabs !== '-') {
@@ -48,12 +56,20 @@ class TabsCommand extends Command
             $tabsArray = [];
         }
 
+        // Validate tabs.
+        $availableTabs = Tabs::available();
+        foreach ($tabsArray as $tab) {
+            if (!in_array($tab, $availableTabs)) {
+                Console::throwError('Tab ' . $tab . ' not valid.');
+            }
+        }
+
         Tabs::setSignature($signature, $tabsArray);
 
         if (count($tabsArray) > 0) {
-            Message::info('Tabs ' . $tabs . ' set for ' . $signature . '.');
+            Console::info('Tabs ' . $tabs . ' set for ' . $signature . '.');
         } else {
-            Message::info('All tabs set for ' . $signature . '.');
+            Console::info('All tabs set for ' . $signature . '.');
         }
     }
 }

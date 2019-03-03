@@ -4,8 +4,7 @@ namespace CoRex\Composer\Repository\Commands\Config;
 
 use CoRex\Composer\Repository\Config;
 use CoRex\Composer\Repository\Constants;
-use CoRex\Composer\Repository\Message;
-use CoRex\Support\System\Console;
+use CoRex\Composer\Repository\Helpers\Console;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,11 +30,12 @@ class ShowCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Message::header($this->getDescription());
+        Console::header($this->getDescription());
 
         $config = Config::load();
         Console::properties([
             'Name' => $config->getName(),
+            'Package' => $config->getPackageName(),
             'Homepage' => $config->getHomepage(),
             'Path' => $config->getPath()
         ]);
@@ -54,12 +54,12 @@ class ShowCommand extends Command
         }
         sort($result);
 
-        Message::blank();
+        Console::br();
         if (count($result) > 0) {
-            Message::info('Packages');
+            Console::info('Packages');
             Console::table($result, ['Package signature', 'Repository url']);
         } else {
-            Message::info('No packages registered.');
+            Console::info('No packages registered.');
         }
 
         // Tabs.
@@ -74,12 +74,12 @@ class ShowCommand extends Command
         }
         sort($result);
 
-        Message::blank();
+        Console::br();
         if (count($result) > 0) {
-            Message::info('Allowed tabs');
+            Console::info('Allowed tabs');
             Console::table($result, ['Package signature', 'Allowed tabs']);
         } else {
-            Message::info('No allowed tabs registered.');
+            Console::info('No allowed tabs registered.');
         }
     }
 }

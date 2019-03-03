@@ -2,6 +2,8 @@
 
 namespace CoRex\Composer\Repository;
 
+use CoRex\Composer\Repository\Helpers\Console;
+use CoRex\Composer\Repository\Helpers\Path;
 use CoRex\Filesystem\Json;
 
 class Config extends Json
@@ -49,6 +51,28 @@ class Config extends Json
     public function setName($name)
     {
         $this->set('name', $name);
+        return $this;
+    }
+
+    /**
+     * Get package name.
+     *
+     * @return string
+     */
+    public function getPackageName()
+    {
+        return $this->get('package-name', Constants::NAME);
+    }
+
+    /**
+     * Set package name.
+     *
+     * @param string $name
+     * @return $this
+     */
+    public function setPackageName($name)
+    {
+        $this->set('package-name', $name);
         return $this;
     }
 
@@ -285,7 +309,8 @@ class Config extends Json
      */
     public function isValid()
     {
-        return $this->exist() && !empty($this->get('name')) && !empty($this->get('homepage'));
+        return $this->exist() && !empty($this->get('name')) && !empty($this->get('package-name'))
+            && !empty($this->get('homepage'));
     }
 
     /**
@@ -294,7 +319,7 @@ class Config extends Json
     public function validate()
     {
         if (!$this->isValid()) {
-            Message::error(Constants::TITLE . ' not initialized. Run command init.');
+            Console::throwError(Constants::TITLE . ' not initialized. Run command init.');
         }
     }
 }

@@ -2,10 +2,9 @@
 
 namespace CoRex\Composer\Repository\Commands\Show;
 
-use CoRex\Composer\Repository\Message;
+use CoRex\Composer\Repository\Helpers\Console;
 use CoRex\Composer\Repository\Services\PackageService;
 use CoRex\Composer\Repository\Services\PackagesService;
-use CoRex\Support\System\Console;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -32,7 +31,7 @@ class AllCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Message::header($this->getDescription());
+        Console::header($this->getDescription());
 
         $result = [];
         $packages = PackagesService::load();
@@ -43,8 +42,15 @@ class AllCommand extends Command
                 foreach ($packageNames as $packageName) {
                     $package = PackageService::load($vendorName . '/' . $packageName);
                     $latestVersion = $package->getLatestVersion();
-                    $versionEntity = $package->getVersionEntity($latestVersion);
-                    $sourceUrl = $versionEntity->getSourceUrl();
+                    if ($latestVersion !== null) {
+                        $versionEntity = $package->getVersionEntity($latestVersion);
+                        $sourceUrl = $versionEntity->getSourceUrl();
+                    } else {
+                        // Not able to find a version, searching for dev-version.
+                        $latestVersion = $package->getLatestVersion(false);
+                        $versionEntity = $package->getVersionEntity($latestVersion);
+                        $sourceUrl = $versionEntity->getSourceUrl();
+                    }
                     $result[] = [
                         'signature' => $vendorName . '/' . $packageName,
                         'latestVersion' => $latestVersion,
@@ -54,7 +60,7 @@ class AllCommand extends Command
             }
             Console::table($result, ['Signature', 'Latest', 'Source url']);
         } else {
-            Message::info('No packages registered.');
+            Console::info('No packages registered.');
         }
     }
 }

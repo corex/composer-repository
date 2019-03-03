@@ -84,6 +84,26 @@ class PackagesService
     }
 
     /**
+     * Get package filename.
+     *
+     * @param string $signature
+     * @return string|null
+     */
+    public function getPackageFilename($signature)
+    {
+        $config = Config::load();
+        $packageHash = $this->getPackageHash($signature);
+        if ($packageHash !== null) {
+            $segments = [
+                'p',
+                $signature . '$' . $packageHash . '.json'
+            ];
+            return $config->getPath($segments);
+        }
+        return null;
+    }
+
+    /**
      * Package hash.
      *
      * @param string $signature

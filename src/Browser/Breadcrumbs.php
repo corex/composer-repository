@@ -3,7 +3,7 @@
 namespace CoRex\Composer\Repository\Browser;
 
 use CoRex\Helpers\Arr;
-use CoRex\Support\System\Session;
+use CoRex\Session\Session;
 
 class Breadcrumbs
 {

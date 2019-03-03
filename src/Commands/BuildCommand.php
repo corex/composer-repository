@@ -6,8 +6,7 @@ use Composer\Satis\Console\Command\BuildCommand as SatisBuildCommand;
 use CoRex\Composer\Repository\Browser;
 use CoRex\Composer\Repository\Config;
 use CoRex\Composer\Repository\Helpers\Build;
-use CoRex\Composer\Repository\Message;
-use CoRex\Composer\Repository\Path;
+use CoRex\Composer\Repository\Helpers\Console;
 use CoRex\Composer\Repository\Services\PackageService;
 use CoRex\Composer\Repository\Services\PackagesService;
 use CoRex\Filesystem\Directory;
@@ -39,41 +38,37 @@ class BuildCommand extends SatisBuildCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Set quiet if specified.
-        Message::setQuiet($output->isQuiet());
-
-        Message::header($this->getDescription());
+        Console::header($this->getDescription());
 
         $config = Config::load();
         if ($config->getPath() === null) {
-            Message::error('Path not set. Run command "config:path" to set path (must be accessible via web).');
+            Console::throwError('Path not set. Run command "config:path" to set path (must be accessible via web).');
         }
 
         // Create browser files.
-        Message::info('Creating basic browser files.');
-        $vendorDirectory = Path::packages();
-        $this->createBrowserFiles($vendorDirectory);
+        Console::info('Creating basic browser files.');
+        Browser::createBrowserFiles();
 
         // Load configuration.
         $path = $config->getPath();
         if ($path === null) {
-            Message::error('Path not set. Run command "config:path".');
+            Console::throwError('Path not set. Run command "config:path".');
         }
         if (!Directory::exist($path)) {
-            Message::error('Path ' . $path . ' does not exist.');
+            Console::throwError('Path ' . $path . ' does not exist.');
         }
 
         // Get and validate packages.
         $repositories = $config->getPackageRepositories();
         $requires = $config->getPackageRequires();
         if (count($requires) == 0) {
-            Message::error('Cannot build. No packages added.');
+            Console::throwError('Cannot build. No packages added.');
         }
 
         // Check if orders are available.
         $order = Build::getOrder();
         if ($order === null) {
-            Message::info('No orders.');
+            Console::info('No orders.');
             return 0;
         }
 
@@ -81,9 +76,16 @@ class BuildCommand extends SatisBuildCommand
 
         // Write temp "satis.json".
         $buildFilename = File::getTempFilename(Directory::temp(), 'satis-', 'json');
+
+        // Remove generated "satis.json".
+        if (File::exist($buildFilename)) {
+            File::delete($buildFilename);
+        }
+
+        // Generate new "satis.json".
         $json = new Json($buildFilename);
         $json->clear();
-        $json->set('name', $config->getName());
+        $json->set('name', $config->getPackageName());
         $json->set('homepage', $config->getHomepage());
         $json->set('repositories', $repositories);
         $json->setBool('require-all', false);
@@ -104,11 +106,8 @@ class BuildCommand extends SatisBuildCommand
         $input->setArgument('file', $buildFilename);
         $result = parent::execute($input, $output);
 
-        // Remove generated "satis.json".
-        File::delete($buildFilename);
-
         // Scanning archives.
-        Message::info('Scanning archives');
+        Console::info('Scanning archives');
 
         $packagesService = PackagesService::load();
         $vendorNames = $packagesService->getVendorNames();
@@ -127,7 +126,7 @@ class BuildCommand extends SatisBuildCommand
                     // Scanning archive.
                     $packageMap = $packageVersion->getMap();
                     if (!$packageMap->exists()) {
-                        Message::info('Scanning archive for ' . $signature . ' ' . $version);
+                        Console::info('Scanning archive for ' . $signature . ' ' . $version);
                         $packageMap->scan();
                     }
 
@@ -139,46 +138,10 @@ class BuildCommand extends SatisBuildCommand
             }
         }
 
-        Message::info('Building and mapping done.');
+        Console::info('Building and mapping done based on ' . $buildFilename);
 
         Build::markRunningDone();
 
         return $result;
-    }
-
-    /**
-     * Create browser files.
-     *
-     * @param string $vendorDirectory
-     */
-    private function createBrowserFiles($vendorDirectory)
-    {
-        $config = Config::load();
-
-        // Create ".htaccess".
-        $lines = [
-            '<IfModule mod_rewrite.c>',
-            'RewriteEngine On',
-            'RewriteBase /',
-            'RewriteRule ^index\.php$ - [L]',
-            'RewriteCond %{REQUEST_FILENAME} !-f',
-            'RewriteCond %{REQUEST_FILENAME} !-d',
-            'RewriteRule . /index.php [L]',
-            '</IfModule>'
-        ];
-        File::putLines($config->getPath(['.htaccess']), $lines);
-
-        // Create "index.php".
-        $lines = [
-            '<' . '?php',
-            'require_once(\'' . $vendorDirectory . '/autoload.php' . '\');',
-            '\\' . Browser::class . '::run();'
-        ];
-        File::putLines($config->getPath(['index.php']), $lines);
-
-        // Copy stylesheet from "scrivo/highlight.php".
-        $stylesheet = 'github-gist.css';
-        $filename = Path::packages(['scrivo', 'highlight.php', 'styles', $stylesheet]);
-        File::copy($filename, Config::load()->getPath());
     }
 }

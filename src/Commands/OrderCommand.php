@@ -1,14 +1,14 @@
 <?php
 
-namespace CoRex\Composer\Repository\Commands\Show;
+namespace CoRex\Composer\Repository\Commands;
 
+use CoRex\Composer\Repository\Helpers\Build;
 use CoRex\Composer\Repository\Helpers\Console;
-use CoRex\Composer\Repository\Services\PackagesService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class VendorsCommand extends Command
+class OrderCommand extends Command
 {
     /**
      * Configure.
@@ -16,8 +16,9 @@ class VendorsCommand extends Command
     protected function configure()
     {
         parent::configure();
-        $this->setName('show:vendors');
-        $this->setDescription('Show vendors');
+        $this->setName('order');
+        $this->setDescription('Order build');
+        $this->setHelp('');
     }
 
     /**
@@ -30,13 +31,7 @@ class VendorsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         Console::header($this->getDescription());
-
-        $vendorNames = PackagesService::load()->getVendorNames();
-        if (count($vendorNames) > 0) {
-            Console::words($vendorNames);
-            Console::writeln('');
-        } else {
-            Console::info('No vendors found.');
-        }
+        Build::order();
+        Console::info('Build ordered.');
     }
 }

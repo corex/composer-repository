@@ -3,9 +3,9 @@
 use CoRex\Composer\Repository\Browser\Breadcrumbs;
 use CoRex\Composer\Repository\Browser\Element;
 use CoRex\Composer\Repository\Browser\Url;
+use CoRex\Composer\Repository\Helpers\Input;
 use CoRex\Composer\Repository\Helpers\Tabs;
 use CoRex\Composer\Repository\Services\PackageService;
-use CoRex\Support\System\Input;
 
 $signature = Input::getQuery('signature');
 $version = Input::getQuery('version');

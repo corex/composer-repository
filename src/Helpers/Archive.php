@@ -3,6 +3,7 @@
 namespace CoRex\Composer\Repository\Helpers;
 
 use CoRex\Composer\Repository\Config;
+use CoRex\Filesystem\File;
 use RecursiveIteratorIterator;
 
 class Archive
@@ -33,7 +34,10 @@ class Archive
         $config = Config::load();
         $distFilename = ltrim(str_replace($config->getHomepage(), '', $distUrl), '/');
         $this->filename = $config->getPath([$distFilename]);
-        $this->archive = new \PharData($this->filename);
+
+        if (File::exist($this->filename)) {
+            $this->archive = new \PharData($this->filename);
+        }
     }
 
     /**
@@ -84,10 +88,12 @@ class Archive
     public function getReadmeContent()
     {
         $content = null;
-        $filenames = $this->getArchiveFilenames();
-        foreach ($filenames as $filename) {
-            if (is_int(strpos(strtolower($filename), 'readme'))) {
-                return $this->getArchiveContent($filename);
+        if ($this->archive !== null) {
+            $filenames = $this->getArchiveFilenames();
+            foreach ($filenames as $filename) {
+                if (is_int(strpos(strtolower($filename), 'readme'))) {
+                    return $this->getArchiveContent($filename);
+                }
             }
         }
         return $content;
@@ -101,10 +107,12 @@ class Archive
     public function getChangelogContent()
     {
         $content = null;
-        $filenames = $this->getArchiveFilenames();
-        foreach ($filenames as $filename) {
-            if (is_int(strpos(strtolower($filename), 'changelog'))) {
-                return $this->getArchiveContent($filename);
+        if ($this->archive !== null) {
+            $filenames = $this->getArchiveFilenames();
+            foreach ($filenames as $filename) {
+                if (is_int(strpos(strtolower($filename), 'changelog'))) {
+                    return $this->getArchiveContent($filename);
+                }
             }
         }
         return $content;
@@ -118,10 +126,12 @@ class Archive
     public function getLicenseContent()
     {
         $content = null;
-        $filenames = $this->getArchiveFilenames();
-        foreach ($filenames as $filename) {
-            if (is_int(strpos(strtolower($filename), 'license'))) {
-                return $this->getArchiveContent($filename);
+        if ($this->archive !== null) {
+            $filenames = $this->getArchiveFilenames();
+            foreach ($filenames as $filename) {
+                if (is_int(strpos(strtolower($filename), 'license'))) {
+                    return $this->getArchiveContent($filename);
+                }
             }
         }
         return $content;
@@ -136,17 +146,19 @@ class Archive
     public function getArchiveFilenames($extension = null)
     {
         $result = [];
-        $this->archive->rewind();
-        $recursiveIteratorIterator = new RecursiveIteratorIterator($this->archive);
-        foreach ($recursiveIteratorIterator as $file) {
-            $addToList = true;
-            if ($extension !== null && $file->getExtension() != $extension) {
-                $addToList = false;
+        if ($this->archive !== null) {
+            $this->archive->rewind();
+            $recursiveIteratorIterator = new RecursiveIteratorIterator($this->archive);
+            foreach ($recursiveIteratorIterator as $file) {
+                $addToList = true;
+                if ($extension !== null && $file->getExtension() != $extension) {
+                    $addToList = false;
+                }
+                if (!$addToList) {
+                    continue;
+                }
+                $result[] = $this->getRelativeFilename($file);
             }
-            if (!$addToList) {
-                continue;
-            }
-            $result[] = $this->getRelativeFilename($file);
         }
         return $result;
     }
@@ -159,11 +171,13 @@ class Archive
      */
     public function getArchiveContent($relativeFilename)
     {
-        $this->archive->rewind();
-        $recursiveIteratorIterator = new RecursiveIteratorIterator($this->archive);
-        foreach ($recursiveIteratorIterator as $file) {
-            if ($this->getRelativeFilename($file) == $relativeFilename) {
-                return $file->getContent();
+        if ($this->archive !== null) {
+            $this->archive->rewind();
+            $recursiveIteratorIterator = new RecursiveIteratorIterator($this->archive);
+            foreach ($recursiveIteratorIterator as $file) {
+                if ($this->getRelativeFilename($file) == $relativeFilename) {
+                    return $file->getContent();
+                }
             }
         }
         return null;

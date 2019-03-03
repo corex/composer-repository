@@ -22,7 +22,7 @@ class PackageService
         $this->signature = $signature;
 
         // Load data.
-        $filename = $this->filename();
+        $filename = PackagesService::load()->getPackageFilename($this->signature);
         $this->data = File::getJson($filename);
     }
 
@@ -51,17 +51,20 @@ class PackageService
      * Versions.
      *
      * @param boolean $reversed
+     * @param bool $filterOutDev
      * @return array
      */
-    public function getVersions($reversed = false)
+    public function getVersions($reversed = false, $filterOutDev = true)
     {
         $versions = array_keys($this->getVersionEntities());
-        foreach ($versions as $index => $version) {
-            if (is_int(strpos($version, 'dev'))) {
-                unset($versions[$index]);
+        if ($filterOutDev) {
+            foreach ($versions as $index => $version) {
+                if (is_int(strpos($version, 'dev'))) {
+                    unset($versions[$index]);
+                }
             }
+            $versions = array_values($versions);
         }
-        $versions = array_values($versions);
         if ($reversed) {
             rsort($versions);
         } else {
@@ -73,11 +76,12 @@ class PackageService
     /**
      * Latest version.
      *
+     * @param bool $filterOutDev
      * @return string
      */
-    public function getLatestVersion()
+    public function getLatestVersion($filterOutDev = true)
     {
-        $versions = $this->getVersions(true);
+        $versions = $this->getVersions(true, $filterOutDev);
         if (count($versions) > 0) {
             return $versions[0];
         }
@@ -110,24 +114,5 @@ class PackageService
     public function getVersionEntities()
     {
         return Arr::get($this->data, 'packages.' . $this->signature, []);
-    }
-
-    /**
-     * Filename.
-     *
-     * @return string
-     */
-    private function filename()
-    {
-        $config = Config::load();
-        $packageHash = PackagesService::load()->getPackageHash($this->signature);
-        if ($packageHash !== null) {
-            $segments = [
-                'p',
-                $this->signature . '$' . $packageHash . '.json'
-            ];
-            return $config->getPath($segments);
-        }
-        return null;
     }
 }

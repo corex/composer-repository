@@ -3,7 +3,7 @@
 namespace CoRex\Composer\Repository\Commands\Config;
 
 use CoRex\Composer\Repository\Config;
-use CoRex\Composer\Repository\Message;
+use CoRex\Composer\Repository\Helpers\Console;
 use CoRex\Helpers\Str;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -34,18 +34,18 @@ class HomepageCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Message::header($this->getDescription());
+        Console::header($this->getDescription());
 
         $homepage = $input->getArgument('homepage');
         if (empty($homepage)) {
-            Message::error('Homepage not specified.');
+            Console::throwError('Homepage not specified.');
         }
         $homepage = rtrim($homepage, '/');
         if (!Str::startsWith($homepage, 'http://') && !Str::startsWith($homepage, 'https://')) {
-            Message::error('Homepage not valid.');
+            Console::throwError('Homepage not valid.');
         }
         Config::load()->setHomepage($homepage)->save();
 
-        Message::info('Homepage ' . $homepage . ' set.');
+        Console::info('Homepage ' . $homepage . ' set.');
     }
 }

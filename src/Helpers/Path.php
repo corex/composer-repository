@@ -1,11 +1,11 @@
 <?php
 
-namespace CoRex\Composer\Repository;
+namespace CoRex\Composer\Repository\Helpers;
 
-use CoRex\Support\Arr;
-use CoRex\Support\System\Path as SupportPath;
+use CoRex\Filesystem\Path as FilesystemPath;
+use CoRex\Helpers\Arr;
 
-class Path extends SupportPath
+class Path extends FilesystemPath
 {
     /**
      * Packages (vendor).
@@ -21,12 +21,13 @@ class Path extends SupportPath
     }
 
     /**
-     * Package path.
+     * Get package path.
+     * Note: if this class is extended, this method has to be overridden to give the base path.
      *
      * @return string
      */
-    protected static function packagePath()
+    protected static function packagePath(): string
     {
-        return dirname(__DIR__);
+        return dirname(dirname(__DIR__));
     }
 }

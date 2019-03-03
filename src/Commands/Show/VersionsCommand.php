@@ -2,9 +2,8 @@
 
 namespace CoRex\Composer\Repository\Commands\Show;
 
-use CoRex\Composer\Repository\Message;
+use CoRex\Composer\Repository\Helpers\Console;
 use CoRex\Composer\Repository\Services\PackageService;
-use CoRex\Support\System\Console;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,7 +33,7 @@ class VersionsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Message::header($this->getDescription());
+        Console::header($this->getDescription());
 
         $signature = $input->getArgument('signature');
 
@@ -46,7 +45,7 @@ class VersionsCommand extends Command
             Console::writeln('');
             Console::writeln('Latest version : ' . $package->getLatestVersion());
         } else {
-            Message::info('Package ' . $signature . ' not found.');
+            Console::info('Package ' . $signature . ' not found.');
         }
     }
 }

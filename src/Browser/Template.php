@@ -2,7 +2,7 @@
 
 namespace CoRex\Composer\Repository\Browser;
 
-use CoRex\Composer\Repository\Path;
+use CoRex\Composer\Repository\Helpers\Path;
 use CoRex\Filesystem\File;
 
 class Template

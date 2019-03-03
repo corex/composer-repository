@@ -107,7 +107,7 @@ class Build
      */
     public static function isRunning()
     {
-        return self::getRunningTime() !== null;
+        return self::getRunningTime() !== '';
     }
 
     /**
@@ -117,7 +117,7 @@ class Build
      */
     public static function getRunningTime()
     {
-        return File::get(self::filename('build-running'), null);
+        return File::get(self::filename('build-running'));
     }
 
     /**

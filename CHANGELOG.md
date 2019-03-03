@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.4.0
+
+### Added
+- Added command to order a build.
+
+### Changed
+- Require php 7.2+ due to package requirements.
+- Moved Input::class to project.
+- "satis.json" is not removed after build.
+- Moved Path::class to /Helpers.
+
+### Fixed
+- Removed deprecated composer package corex/support in favor of corex/helpers, corex/filesystem, corex/sessions, corex/terminal.
+- Added missing validation of tabs on Tabs command.
+- Fixed getting version on show:all command.
+- Fixed hiding on all commands.
+
 ## 0.3.4
 
 ### Added

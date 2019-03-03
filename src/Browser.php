@@ -3,9 +3,10 @@
 namespace CoRex\Composer\Repository;
 
 use CoRex\Composer\Repository\Browser\Template;
+use CoRex\Composer\Repository\Helpers\Input;
+use CoRex\Composer\Repository\Helpers\Path;
 use CoRex\Filesystem\File;
-use CoRex\Support\System\Input;
-use CoRex\Support\System\Session;
+use CoRex\Session\Session;
 
 class Browser
 {
@@ -29,6 +30,41 @@ class Browser
         $this->config = Config::load();
         $this->template = Template::load('standard');
         $this->pagePath = Path::packageCurrent(['pages']);
+    }
+
+    /**
+     * Create browser files.
+     */
+    public static function createBrowserFiles()
+    {
+        $config = Config::load();
+        $vendorDirectory = Path::packages();
+
+        // Create ".htaccess".
+        $lines = [
+            '<IfModule mod_rewrite.c>',
+            'RewriteEngine On',
+            'RewriteBase /',
+            'RewriteRule ^index\.php$ - [L]',
+            'RewriteCond %{REQUEST_FILENAME} !-f',
+            'RewriteCond %{REQUEST_FILENAME} !-d',
+            'RewriteRule . /index.php [L]',
+            '</IfModule>'
+        ];
+        File::putLines($config->getPath(['.htaccess']), $lines);
+
+        // Create "index.php".
+        $lines = [
+            '<' . '?php',
+            'require_once(\'' . $vendorDirectory . '/autoload.php' . '\');',
+            '\\' . Browser::class . '::run();'
+        ];
+        File::putLines($config->getPath(['index.php']), $lines);
+
+        // Copy stylesheet from "scrivo/highlight.php".
+        $stylesheet = 'github-gist.css';
+        $filename = Path::packages(['scrivo', 'highlight.php', 'styles', $stylesheet]);
+        File::copy($filename, Config::load()->getPath());
     }
 
     /**

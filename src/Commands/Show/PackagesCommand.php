@@ -2,9 +2,8 @@
 
 namespace CoRex\Composer\Repository\Commands\Show;
 
-use CoRex\Composer\Repository\Message;
+use CoRex\Composer\Repository\Helpers\Console;
 use CoRex\Composer\Repository\Services\PackagesService;
-use CoRex\Support\System\Console;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,7 +29,7 @@ class PackagesCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Message::header($this->getDescription());
+        Console::header($this->getDescription());
 
         $packages = PackagesService::load();
         $vendorNames = $packages->getVendorNames();
@@ -42,7 +41,7 @@ class PackagesCommand extends Command
                 Console::writeln('');
             }
         } else {
-            Message::info('No vendors found.');
+            Console::info('No vendors found.');
         }
     }
 }

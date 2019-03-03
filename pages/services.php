@@ -1,7 +1,7 @@
 <?php
 
 use CoRex\Composer\Repository\Helpers\Build;
-use CoRex\Support\System\Input;
+use CoRex\Composer\Repository\Helpers\Input;
 
 $service = Input::getQuery('service');
 
@@ -19,8 +19,8 @@ if ($service == 'getOrderStatus') {
         // Add running job count.
         $count++;
     }
-    $runningTime = Build::getRunningTime();
-    $runningTime = $runningTime !== null ? date('Y-m-d H:i:s', $runningTime) : '';
+    $runningTime = intval(Build::getRunningTime());
+    $runningTime = $runningTime > 0 ? date('Y-m-d H:i:s', $runningTime) : '';
     $json = json_encode([
         'count' => $count,
         'isRunning' => $isRunning,

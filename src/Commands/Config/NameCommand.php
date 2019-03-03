@@ -3,7 +3,7 @@
 namespace CoRex\Composer\Repository\Commands\Config;
 
 use CoRex\Composer\Repository\Config;
-use CoRex\Composer\Repository\Message;
+use CoRex\Composer\Repository\Helpers\Console;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -33,14 +33,14 @@ class NameCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Message::header($this->getDescription());
+        Console::header($this->getDescription());
 
         $name = $input->getArgument('name');
         if (empty($name)) {
-            Message::error('Name not specified.');
+            Console::throwError('Name not specified.');
         }
         Config::load()->setName($name)->save();
 
-        Message::info('Name ' . $name . ' set.');
+        Console::info('Name ' . $name . ' set.');
     }
 }

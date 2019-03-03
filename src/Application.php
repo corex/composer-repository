@@ -9,10 +9,12 @@ use Composer\Satis\Console\Command\BuildCommand as SatisBuildCommand;
 use Composer\Satis\Console\Command\InitCommand as SatisInitCommand;
 use Composer\Satis\Console\Command\PurgeCommand as SatisPurgeCommand;
 use CoRex\Composer\Repository\Commands;
-use CoRex\Composer\Repository\Commands\TestCommand;
+use CoRex\Composer\Repository\Helpers\Console;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\HelpCommand;
 use Symfony\Component\Console\Command\ListCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class Application extends SatisApplication
 {
@@ -49,6 +51,7 @@ class Application extends SatisApplication
         $commands[] = new Commands\BuildCommand();
         $commands[] = new Commands\ClearCommand();
         $commands[] = new Commands\InitCommand();
+        $commands[] = new Commands\OrderCommand();
 
         // Config commands.
         $commands[] = new Commands\Config\HomepageCommand();
@@ -68,6 +71,19 @@ class Application extends SatisApplication
         $commands[] = new Commands\Show\VersionsCommand();
 
         return $commands;
+    }
+
+    /**
+     * Do run.
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     */
+    public function doRun(InputInterface $input, OutputInterface $output)
+    {
+        Console::setQuiet($output->isQuiet());
+        return parent::doRun($input, $output);
     }
 
     /**

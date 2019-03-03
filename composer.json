@@ -14,14 +14,16 @@
         }
     ],
     "require": {
-        "php": ">=7.0",
+        "php": "^7.2",
+        "ext-json": "*",
         "composer/satis": "^1.0",
-        "corex/support": "^3.3",
-        "corex/filesystem": "^1.2",
-        "corex/helpers": "^1.3",
         "symfony/event-dispatcher": "^4.1",
         "scrivo/highlight.php": "v9.12.0.4",
-        "cebe/markdown": "^1.2"
+        "cebe/markdown": "^1.2",
+        "corex/helpers": "^2.0",
+        "corex/filesystem": "^2.0",
+        "corex/terminal": "^2.2",
+        "corex/session": "^2.0"
     },
     "require-dev": {
     },

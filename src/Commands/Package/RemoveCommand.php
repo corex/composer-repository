@@ -4,7 +4,8 @@ namespace CoRex\Composer\Repository\Commands\Package;
 
 use Composer\Command\BaseCommand;
 use CoRex\Composer\Repository\Config;
-use CoRex\Composer\Repository\Message;
+use CoRex\Composer\Repository\Helpers\Build;
+use CoRex\Composer\Repository\Helpers\Console;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -33,20 +34,23 @@ class RemoveCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Message::header($this->getDescription());
+        Console::header($this->getDescription());
 
         $signature = $input->getArgument('signature');
 
         // Remove package.
-        Message::info('Removing package ' . $signature);
-        Message::blank();
+        Console::info('Removing package ' . $signature);
+        Console::br();
         $config = Config::load();
+
         $isRemoved = $config->removePackage($signature);
         if ($isRemoved) {
             $config->save();
-            Message::info('Package ' . $signature . ' removed.');
+            Console::info('Package ' . $signature . ' removed.');
+            Build::order();
+            Console::info('Build ordered.');
         } else {
-            Message::error('Package ' . $signature . ' not found.');
+            Console::error('Package ' . $signature . ' not found.');
         }
     }
 }
