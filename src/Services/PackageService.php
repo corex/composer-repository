@@ -2,7 +2,6 @@
 
 namespace CoRex\Composer\Repository\Services;
 
-use CoRex\Composer\Repository\Config;
 use CoRex\Composer\Repository\Helpers\PackageVersion;
 use CoRex\Filesystem\File;
 use CoRex\Helpers\Arr;

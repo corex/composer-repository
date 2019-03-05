@@ -33,6 +33,28 @@ class Config extends Json
     }
 
     /**
+     * Get theme.
+     *
+     * @return string
+     */
+    public function getTheme()
+    {
+        return $this->get('theme', Constants::THEME);
+    }
+
+    /**
+     * Set theme.
+     *
+     * @param string $theme
+     * @return $this
+     */
+    public function setTheme($theme)
+    {
+        $this->set('theme', $theme);
+        return $this;
+    }
+
+    /**
      * Get name.
      *
      * @return string

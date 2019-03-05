@@ -1,0 +1,81 @@
+<h5>{{title}}</h5>
+
+Version
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+        {{version}}
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        {{#versions}}
+        <a class="dropdown-item" href="{{url}}">{{version}}</a>
+        {{/versions}}
+    </div>
+</div>
+<br>
+
+<ul class="nav nav-tabs">
+    {{#tab.url-details}}
+    <li class="nav-item">
+        <a class="nav-link{{#active.details}} active{{/active.details}}" href="{{tab.url-details}}">Details</a>
+    </li>
+    {{/tab.url-details}}
+    {{#tab.url-readme}}
+    <li class="nav-item">
+        <a class="nav-link{{#active.readme}} active{{/active.readme}}" href="{{tab.url-readme}}">Readme</a>
+    </li>
+    {{/tab.url-readme}}
+    {{#tab.url-changelog}}
+    <li class="nav-item">
+        <a class="nav-link{{#active.changelog}} active{{/active.changelog}}" href="{{tab.url-changelog}}">Changelog</a>
+    </li>
+    {{/tab.url-changelog}}
+    {{#tab.url-composer}}
+    <li class="nav-item">
+        <a class="nav-link{{#active.composer}} active{{/active.composer}}" href="{{tab.url-composer}}">Composer</a>
+    </li>
+    {{/tab.url-composer}}
+    {{#tab.url-files}}
+    <li class="nav-item">
+        <a class="nav-link{{#active.files}} active{{/active.files}}" href="{{tab.url-files}}">Files</a>
+    </li>
+    {{/tab.url-files}}
+</ul>
+
+{{#active.details}}
+<table class="table table-bordered table-hover table-sm">
+    <tbody>
+    {{#content-details}}
+    <tr>
+        <th>{{title}}</th>
+        <td>{{value}}</td>
+    </tr>
+    {{/content-details}}
+    </tbody>
+</table>
+{{/active.details}}
+
+{{#active.readme}}
+    {{content-readme}}
+{{/active.readme}}
+
+{{#active.changelog}}
+    {{content-changelog}}
+{{/active.changelog}}
+
+{{#active.composer}}
+    {{content-composer}}
+{{/active.composer}}
+
+{{#active.files}}
+    {{#content-files}}
+        {{url}}<br>
+    {{/content-files}}
+{{/active.files}}
+
+{{#active.fileshow}}
+    {{#content-fileshow}}
+        <h4>{{filename}}</h4>
+        {{content}}
+    {{/content-fileshow}}
+{{/active.fileshow}}

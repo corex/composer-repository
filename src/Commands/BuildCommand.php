@@ -9,6 +9,7 @@ use CoRex\Composer\Repository\Helpers\Build;
 use CoRex\Composer\Repository\Helpers\Console;
 use CoRex\Composer\Repository\Services\PackageService;
 use CoRex\Composer\Repository\Services\PackagesService;
+use CoRex\Composer\Repository\Services\VersionService;
 use CoRex\Filesystem\Directory;
 use CoRex\Filesystem\File;
 use CoRex\Filesystem\Json;
@@ -109,6 +110,7 @@ class BuildCommand extends SatisBuildCommand
         // Scanning archives.
         Console::info('Scanning archives');
 
+        $versionService = VersionService::load();
         $packagesService = PackagesService::load();
         $vendorNames = $packagesService->getVendorNames();
         foreach ($vendorNames as $vendorName) {
@@ -130,6 +132,8 @@ class BuildCommand extends SatisBuildCommand
                         $packageMap->scan();
                     }
 
+                    $versionService->setVersion($signature, $version);
+
                     // Only set for latest version.
                     if ($version == $latestVersion) {
                         // TODO For the future.
@@ -137,6 +141,10 @@ class BuildCommand extends SatisBuildCommand
                 }
             }
         }
+        $versionService->save();
+
+        $newVersions = $versionService->getNewVersions();
+        // TODO Send notifications about new versions.
 
         Console::info('Building and mapping done based on ' . $buildFilename);
 

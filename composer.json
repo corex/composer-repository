@@ -23,7 +23,10 @@
         "corex/helpers": "^2.0",
         "corex/filesystem": "^2.0",
         "corex/terminal": "^2.2",
-        "corex/session": "^2.0"
+        "corex/session": "^2.0",
+        "corex/site": "^1.0",
+        "corex/template": "^2.0",
+        "symfony/http-foundation": "^4.2"
     },
     "require-dev": {
     },

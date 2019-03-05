@@ -1,0 +1,21 @@
+<h5>{{title}}</h5>
+
+<table class="table table-bordered table-hover table-sm">
+    <thead>
+    <tr>
+        <th scope="col">Signature</th>
+        <th scope="col">Version</th>
+        <th scope="col">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#packages}}
+    <tr>
+        <td>{{url}}</td>
+        <td>{{version}}</td>
+        <td>{{description}}</td>
+    </tr>
+    {{/packages}}
+    </tbody>
+</table>
+{{message}}

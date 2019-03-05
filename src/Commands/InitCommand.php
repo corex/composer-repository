@@ -3,6 +3,7 @@
 namespace CoRex\Composer\Repository\Commands;
 
 use CoRex\Composer\Repository\Config;
+use CoRex\Composer\Repository\Constants;
 use CoRex\Composer\Repository\Helpers\Path;
 use CoRex\Filesystem\Directory;
 use CoRex\Helpers\Str;
@@ -58,6 +59,7 @@ class InitCommand extends Command
         $config->setName($name);
         $config->setPackageName($packageName);
         $config->setHomepage($homepage);
+        $config->setTheme(Constants::THEME);
         $config->save();
 
         if (!Str::startsWith($homepage, 'https://')) {

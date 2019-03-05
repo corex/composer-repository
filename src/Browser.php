@@ -2,34 +2,55 @@
 
 namespace CoRex\Composer\Repository;
 
-use CoRex\Composer\Repository\Browser\Template;
+use CoRex\Composer\Repository\Browser\Breadcrumbs;
+use CoRex\Composer\Repository\Browser\Url;
+use CoRex\Composer\Repository\Controllers\IndexController;
+use CoRex\Composer\Repository\Controllers\LocationController;
+use CoRex\Composer\Repository\Controllers\PackageController;
+use CoRex\Composer\Repository\Controllers\PackagesController;
+use CoRex\Composer\Repository\Controllers\ServicesController;
+use CoRex\Composer\Repository\Exceptions\SiteException;
 use CoRex\Composer\Repository\Helpers\Input;
 use CoRex\Composer\Repository\Helpers\Path;
+use CoRex\Composer\Repository\Helpers\Request;
+use CoRex\Composer\Repository\Helpers\Theme;
 use CoRex\Filesystem\File;
 use CoRex\Session\Session;
+use CoRex\Site\Config as SiteConfig;
+use CoRex\Site\Layout;
 
 class Browser
 {
-    /**
-     * @var Config
-     */
+    const DEFAULT_CONTROLLER = 'packages';
+
+    /** @var Config */
     private $config;
 
-    /**
-     * @var Template
-     */
-    private $template;
+    /** @var Layout */
+    private $layout;
 
+    /** @var string */
     private $pagePath;
 
     /**
-     * WebBrowser constructor.
+     * WebBrowser.
+     *
+     * @throws \Exception
      */
     public function __construct()
     {
         $this->config = Config::load();
-        $this->template = Template::load('standard');
-        $this->pagePath = Path::packageCurrent(['pages']);
+
+        // Initialize theme.
+        SiteConfig::setLayoutPath(Path::packageCurrent(['templates', 'layouts']));
+        SiteConfig::setViewPath(Path::packageCurrent(['templates', 'views']));
+
+        // Set theme.
+        $theme = Config::load()->getTheme();
+        $themeConstant = Theme::details($theme);
+        SiteConfig::setTheme($themeConstant);
+
+        $this->layout = Layout::load('site');
     }
 
     /**
@@ -84,21 +105,31 @@ class Browser
 
     /**
      * Dispatch.
+     *
+     * @throws \Exception
      */
     public function dispatch()
     {
         Session::initialize();
-        $this->template->set('title', $this->config->getName());
-        $this->template->set('homeUrl', $this->config->getHomepage());
-        $page = Input::getQuery('page', 'index');
-        $pageContent = $this->getPage($page);
-        if ($page != 'services') {
-            $this->template->set('content', $pageContent);
-        } else {
-            $response = $this->getPage('services');
-            print($response);
-            exit;
+        $request = Request::createFromGlobals();
+
+        if ($request->getController(self::DEFAULT_CONTROLLER) == self::DEFAULT_CONTROLLER) {
+            Breadcrumbs::clear();
+            Breadcrumbs::add('Packages', []);
         }
+
+
+        $view = $this->executeController($request);
+
+        $this->layout->variables([
+            'url-home' => Url::home(),
+            'url-packagist' => Url::packagist(),
+            'url-order' => Url::build(['controller' => 'services', 'service' => 'order']),
+            'url-order-status' => Url::build(['controller' => 'services', 'service' => 'getOrderStatus']),
+            'title' => $this->config->getName(),
+            'breadcrumbs' => Breadcrumbs::render(),
+            'body' => $view
+        ]);
     }
 
     /**
@@ -106,25 +137,50 @@ class Browser
      */
     public function display()
     {
-        print($this->template);
+        print($this->layout);
     }
 
     /**
-     * Get page.
+     * Execute controller.
      *
-     * @param string $page
-     * @return string
+     * @param Request $request
+     * @param string $defaultController
+     * @return \CoRex\Site\View|null
+     * @throws \Exception
      */
-    private function getPage($page)
+    private function executeController(Request $request, $defaultController = self::DEFAULT_CONTROLLER)
     {
-        $filename = $this->pagePath . '/' . $page . '.php';
-        if (!File::exist($filename)) {
-            $filename = $this->pagePath . '/index.php';
-            $this->template->set('content', 'Page ' . $page . ' not found.');
+        // Register controllers.
+        $controllers = [
+            'package' => PackageController::class,
+            'packages' => PackagesController::class,
+            'location' => LocationController::class,
+            'services' => ServicesController::class
+        ];
+
+        $controllerName = $request->getController($defaultController);
+        $view = null;
+        $controller = null;
+
+        // Execute controller.
+        if (isset($controllers[$controllerName])) {
+            $controllerClass = $controllers[$controllerName];
+            $controller = new $controllerClass($request);
+        } else {
+            throw new SiteException('Controller not found.');
         }
 
-        ob_start();
-        require($filename);
-        return ob_get_clean();
+        if ($controller !== null) {
+            try {
+                $view = call_user_func([$controller, 'render']);
+            } catch (\Exception $exception) {
+                error_log($exception->getMessage());
+                if ($exception instanceof SiteException) {
+                    $this->layout->variable('error', $exception->getMessage());
+                }
+            }
+        }
+
+        return $view;
     }
 }

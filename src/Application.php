@@ -52,6 +52,7 @@ class Application extends SatisApplication
         $commands[] = new Commands\ClearCommand();
         $commands[] = new Commands\InitCommand();
         $commands[] = new Commands\OrderCommand();
+        $commands[] = new Commands\TestCommand();
 
         // Config commands.
         $commands[] = new Commands\Config\HomepageCommand();
@@ -59,6 +60,7 @@ class Application extends SatisApplication
         $commands[] = new Commands\Config\PathCommand();
         $commands[] = new Commands\Config\ShowCommand();
         $commands[] = new Commands\Config\TabsCommand();
+        $commands[] = new Commands\Config\ThemeCommand();
 
         // Package commands.
         $commands[] = new Commands\Package\AddCommand();
