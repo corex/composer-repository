@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.0
+
+### Changed.
+- Refactored codebase to use corex/site, controllers and templates.
+
 ## 0.4.0
 
 ### Added
