@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.1
+
+### Fixed
+- Fixed sorting of packages.
+
 ## 0.5.0
 
 ### Changed.

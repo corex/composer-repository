@@ -18,7 +18,7 @@ class PackagesController extends BaseController
     public function render()
     {
         $view = $this->view('packages');
-        $view->variable('title', 'Packages');
+        $view->variable('title', 'Registered packages');
 
         // Compile list of packages.
         $packages = [];
@@ -31,15 +31,21 @@ class PackagesController extends BaseController
                 $latestVersion = $packageService->getLatestVersion();
                 $packageVersion = $packageService->getVersionEntity($latestVersion);
                 if ($packageVersion !== null) {
-                    $url = Url::link($signature, ['controller' => 'package', 'signature' => $signature]);
+                    $url = Url::build(['controller' => 'package', 'signature' => $signature]);
                     $packages[] = [
-                        'url' => $url,
+                        'url' =>  $url,
                         'signature' => $signature,
                         'version' => $latestVersion,
                         'description' => $packageVersion->getValue('description')
                     ];
                 }
             }
+
+            // Sort packages.
+            usort($packages, function ($a, $b) {
+                return $a['signature'] <=> $b['signature'];
+            });
+
             if (count($packages) == 0) {
                 $message = 'No packages registered.';
             }
