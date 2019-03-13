@@ -33,6 +33,84 @@ class Config extends Json
     }
 
     /**
+     * Set email from.
+     *
+     * @param string $email
+     */
+    public function setEmailFrom($email)
+    {
+        $this->set('email.from', $email);
+    }
+
+    /**
+     * Get email from.
+     *
+     * @return string
+     */
+    public function getEmailFrom()
+    {
+        return $this->get('email.from');
+    }
+
+    /**
+     * Add email to.
+     *
+     * @param string $email
+     * @return bool
+     */
+    public function addEmailTo($email)
+    {
+        $emails = $this->getEmailTos();
+        if (!in_array($email, $emails)) {
+            $emails[] = $email;
+            $isAdded = true;
+        } else {
+            $isAdded = false;
+        }
+        $this->set('email.to', $emails);
+        return $isAdded;
+    }
+
+    /**
+     * Remove email to.
+     *
+     * @param string $email
+     * @return bool
+     */
+    public function removeEmailTo($email)
+    {
+        $emails = $this->getEmailTos();
+        $key = array_search($email, $emails);
+        if ($key !== false) {
+            unset($emails[$key]);
+            $emails = array_values($emails);
+        }
+        $this->set('email.to', $emails);
+        return $key !== false;
+    }
+
+    /**
+     * Get email to.
+     *
+     * @return string[]
+     */
+    public function getEmailTos()
+    {
+        return $this->get('email.to', []);
+    }
+
+    /**
+     * Has email to.
+     *
+     * @param string $email
+     * @return bool
+     */
+    public function hasEmailTo($email)
+    {
+        return in_array($email, $this->getEmailTos());
+    }
+
+    /**
      * Get theme.
      *
      * @return string

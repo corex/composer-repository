@@ -61,6 +61,9 @@ class Application extends SatisApplication
         $commands[] = new Commands\Config\ShowCommand();
         $commands[] = new Commands\Config\TabsCommand();
         $commands[] = new Commands\Config\ThemeCommand();
+        $commands[] = new Commands\Config\EmailFromCommand();
+        $commands[] = new Commands\Config\EmailToAddCommand();
+        $commands[] = new Commands\Config\EmailToRemoveCommand();
 
         // Package commands.
         $commands[] = new Commands\Package\AddCommand();

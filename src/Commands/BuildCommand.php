@@ -4,9 +4,11 @@ namespace CoRex\Composer\Repository\Commands;
 
 use Composer\Satis\Console\Command\BuildCommand as SatisBuildCommand;
 use CoRex\Composer\Repository\Browser;
+use CoRex\Composer\Repository\Browser\Url;
 use CoRex\Composer\Repository\Config;
 use CoRex\Composer\Repository\Helpers\Build;
 use CoRex\Composer\Repository\Helpers\Console;
+use CoRex\Composer\Repository\Helpers\Mailer;
 use CoRex\Composer\Repository\Services\PackageService;
 use CoRex\Composer\Repository\Services\PackagesService;
 use CoRex\Composer\Repository\Services\VersionService;
@@ -143,8 +145,44 @@ class BuildCommand extends SatisBuildCommand
         }
         $versionService->save();
 
+        // Send new or updated packages.
+        $registeredPackages = $config->getPackageSignatures();
+        $newPackages = $versionService->getNewPackages();
         $newVersions = $versionService->getNewVersions();
-        // TODO Send notifications about new versions.
+        $updatedPackages = array_keys($newVersions);
+        if (count($newVersions) > 0 && !$versionService->isFirstRun()) {
+            $mailer = new Mailer();
+            $mailer->setHtml();
+            $mailer->subject($config->getName() . ' - new/updated packages');
+            $mailer->text('Click on signature to go to package in browser.');
+            $mailer->br();
+
+            // Notify about new packages.
+            $mailer->text('<strong>New packages.</strong>');
+            foreach ($newPackages as $signature) {
+                if (!in_array($signature, $registeredPackages)) {
+                    continue;
+                }
+                $url = Url::build(['controller' => 'package', 'signature' => $signature]);
+                $line = '<a href="' . $url . '">' . $signature . '</a>';
+                $mailer->text($line);
+            }
+
+            $mailer->br();
+
+            // Notify about updated packages.
+            $mailer->text('<strong>Updated packages.</strong>');
+            foreach ($updatedPackages as $signature) {
+                if (!in_array($signature, $registeredPackages)) {
+                    continue;
+                }
+                $url = Url::build(['controller' => 'package', 'signature' => $signature]);
+                $line = '<a href="' . $url . '">' . $signature . '</a>';
+                $mailer->text($line);
+            }
+
+            $mailer->send();
+        }
 
         Console::info('Building and mapping done based on ' . $buildFilename);
 

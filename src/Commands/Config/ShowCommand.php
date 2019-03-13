@@ -37,7 +37,9 @@ class ShowCommand extends Command
             'Name' => $config->getName(),
             'Package' => $config->getPackageName(),
             'Homepage' => $config->getHomepage(),
-            'Path' => $config->getPath()
+            'Path' => $config->getPath(),
+            'Email (from)' => $config->getEmailFrom(),
+            'Email (to)' => implode(', ', $config->getEmailTos())
         ]);
 
         // Packages.

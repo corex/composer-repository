@@ -16,15 +16,22 @@ class VersionService
     /** @var array|mixed[] */
     private $versionsNew;
 
+    /** @var array|mixed[] */
+    private $packagesNew;
+
+    /** @var bool */
+    private $isFirstRun;
+
     /**
      * VersionService.
      */
     public function __construct()
     {
         $this->filename = Config::load()->getPath(['versions.json']);
+        $this->isFirstRun = !File::exist($this->filename);
         $this->versions = File::getJson($this->filename);
         $this->versionsNew = [];
-        $this->versionLatest = [];
+        $this->packagesNew = [];
     }
 
     /**
@@ -46,6 +53,16 @@ class VersionService
     }
 
     /**
+     * Is first run.
+     *
+     * @return bool
+     */
+    public function isFirstRun(): bool
+    {
+        return $this->isFirstRun === true;
+    }
+
+    /**
      * Set version.
      *
      * @param string $signature
@@ -55,6 +72,7 @@ class VersionService
     {
         if (!array_key_exists($signature, $this->versions)) {
             $this->versions[$signature] = [];
+            $this->packagesNew[] = $signature;
         }
         if (!in_array($version, $this->versions[$signature])) {
             $this->versions[$signature][] = $version;
@@ -75,5 +93,15 @@ class VersionService
     public function getNewVersions(): array
     {
         return $this->versionsNew;
+    }
+
+    /**
+     * Get new packages.
+     *
+     * @return array
+     */
+    public function getNewPackages(): array
+    {
+        return $this->packagesNew;
     }
 }
