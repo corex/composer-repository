@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.0
+
+### Fixed
+- Removed unused property in Browser::class.
+- Added phpdoc exception.
+
+### Added
+- Added notifications of new/updated packages.
+
 ## 0.5.2
 
 ### Fixed
