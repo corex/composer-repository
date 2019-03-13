@@ -4,13 +4,11 @@ namespace CoRex\Composer\Repository;
 
 use CoRex\Composer\Repository\Browser\Breadcrumbs;
 use CoRex\Composer\Repository\Browser\Url;
-use CoRex\Composer\Repository\Controllers\IndexController;
 use CoRex\Composer\Repository\Controllers\LocationController;
 use CoRex\Composer\Repository\Controllers\PackageController;
 use CoRex\Composer\Repository\Controllers\PackagesController;
 use CoRex\Composer\Repository\Controllers\ServicesController;
 use CoRex\Composer\Repository\Exceptions\SiteException;
-use CoRex\Composer\Repository\Helpers\Input;
 use CoRex\Composer\Repository\Helpers\Path;
 use CoRex\Composer\Repository\Helpers\Request;
 use CoRex\Composer\Repository\Helpers\Theme;
@@ -28,9 +26,6 @@ class Browser
 
     /** @var Layout */
     private $layout;
-
-    /** @var string */
-    private $pagePath;
 
     /**
      * WebBrowser.
@@ -90,6 +85,8 @@ class Browser
 
     /**
      * Run.
+     *
+     * @throws \Exception
      */
     public static function run()
     {
