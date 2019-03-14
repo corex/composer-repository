@@ -45,9 +45,10 @@
 		</ul>
 	</div>
 
-	<span id="build-status" class="badge badge-success" style="padding: 5px 5px 5px 5px;"></span>
-	&nbsp;&nbsp;
-	<button id="build-order" class="btn btn-primary btn-sm" type="button">Build</button>
+	<div class="float-right">
+		<span id="build-status" class="badge badge-success" style="padding: 5px 5px 5px 5px;"></span>
+		<button id="build-order" class="btn btn-primary btn-sm" type="button">Build</button>
+	</div>
 </nav>
 {{ breadcrumbs }}{{# error }}<div class="alert alert-danger" role="alert">{{ error }}</div>{{/ error }}
 <div style="padding: 10px 10px 10px 10px;">{{ body }}</div>
@@ -86,25 +87,25 @@
 				success: function (data) {
 
 					// Get data properties.
-					let orderCount = 0;
+					let isOrdered = false;
+					let orderTime = '';
 					let isRunning = false;
 					let runningTime = '';
 					if (data !== undefined) {
-						orderCount = data.count;
+					    isOrdered = data.isOrdered;
+					    orderTime = data.orderTime;
 						isRunning = data.isRunning;
 						runningTime = data.runningTime;
 					}
 
-					let buildText = '(' + orderCount + ') Building idle';
+					let buildText = 'Building idle';
 					let badgeClass = 'badge-success';
 					if (isRunning) {
-						buildText = '(' + orderCount + ') Build started at ' + runningTime + '.';
-						badgeClass = 'badge-warning';
-					} else {
-						if (orderCount > 0) {
-							buildText = '(' + orderCount + ') Build starting soon.';
-							badgeClass = 'badge-info';
-						}
+                        buildText = 'Build started at ' + runningTime + '.';
+                        badgeClass = 'badge-warning';
+                    } else if (isOrdered) {
+                        buildText = 'Build ordered at ' + orderTime + '.';
+                        badgeClass = 'badge-info';
 					}
 
 					// Update badge.

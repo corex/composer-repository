@@ -68,10 +68,15 @@ class BuildCommand extends SatisBuildCommand
             Console::throwError('Cannot build. No packages added.');
         }
 
+        // Check if build already running.
+        if (Build::isRunning()) {
+            Console::info('Build already running. Skipping.');
+            return 0;
+        }
+
         // Check if orders are available.
-        $order = Build::getOrder();
-        if ($order === null) {
-            Console::info('No orders.');
+        if (!Build::isOrdered()) {
+            Console::info('Build not ordered.');
             return 0;
         }
 

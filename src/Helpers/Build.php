@@ -3,85 +3,48 @@
 namespace CoRex\Composer\Repository\Helpers;
 
 use CoRex\Composer\Repository\Config;
-use CoRex\Filesystem\Directory;
 use CoRex\Filesystem\File;
-use CoRex\Helpers\Arr;
-use CoRex\Helpers\Str;
 
 class Build
 {
+    const FILENAME_ORDER = 'build-order';
+    const FILENAME_RUNNING = 'build-running';
+
     /**
      * Place a build order.
      */
     public static function order()
     {
-        File::put(self::filename('build-order-' . time()), time());
+        File::put(self::filename(self::FILENAME_ORDER), time());
     }
 
     /**
-     * Get order count.
+     * Mark order done.
+     */
+    public static function markOrderDone()
+    {
+        File::delete(self::filename(self::FILENAME_ORDER));
+    }
+
+    /**
+     * Is ordered.
      *
-     * @return integer
+     * @return bool
      */
-    public static function getOrderCount()
+    public static function isOrdered()
     {
-        return count(self::getOrders());
+        return File::exist(self::filename(self::FILENAME_ORDER))
+            && !File::exist(self::filename(self::FILENAME_RUNNING));
     }
 
     /**
-     * Get orders.
+     * Get order time.
      *
-     * @return integer[] Order timestamps.
+     * @return string
      */
-    public static function getOrders()
+    public static function getOrderTime()
     {
-        $path = Config::load()->getPath();
-        $entries = Directory::entries($path, 'build-order-*', Directory::TYPE_FILE);
-        $orders = [];
-        foreach ($entries as $entry) {
-            $orders[] = Str::last($entry['name'], '-');
-        }
-        sort($orders);
-        return $orders;
-    }
-
-    /**
-     * Get order.
-     *
-     * @return integer|null
-     */
-    public static function getOrder()
-    {
-        $orders = self::getOrders();
-        if (count($orders) > 0) {
-            $order = Arr::first($orders);
-            self::removeOrder($order);
-            return $order;
-        }
-        return null;
-    }
-
-    /**
-     * Remove order.
-     *
-     * @param integer $order
-     */
-    public static function removeOrder($order)
-    {
-        File::delete(self::filename('build-order-' . $order));
-    }
-
-    /**
-     * Remove all orders.
-     */
-    public static function removeAllOrders()
-    {
-        $orders = self::getOrders();
-        if (count($orders) > 0) {
-            foreach ($orders as $order) {
-                self::removeOrder($order);
-            }
-        }
+        return File::get(self::filename(self::FILENAME_ORDER));
     }
 
     /**
@@ -98,6 +61,7 @@ class Build
     public static function markRunningDone()
     {
         File::delete(self::filename('build-running'));
+        self::markOrderDone();
     }
 
     /**
@@ -107,7 +71,7 @@ class Build
      */
     public static function isRunning()
     {
-        return self::getRunningTime() !== '';
+        return File::exist(self::filename(self::FILENAME_RUNNING));
     }
 
     /**
@@ -117,7 +81,7 @@ class Build
      */
     public static function getRunningTime()
     {
-        return File::get(self::filename('build-running'));
+        return File::get(self::filename(self::FILENAME_RUNNING));
     }
 
     /**

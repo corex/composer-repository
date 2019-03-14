@@ -22,16 +22,19 @@ class ServicesController extends BaseController
         }
 
         if ($service == 'getOrderStatus') {
+            // Get order information.
+            $isOrdered = Build::isOrdered();
+            $orderTime = intval(Build::getOrderTime());
+            $orderTime = $orderTime > 0 ? date('Y-m-d H:i:s', $orderTime) : '';
+
+            // Get running information.
             $isRunning = Build::isRunning();
-            $count = Build::getOrderCount();
-            if (Build::isRunning()) {
-                // Add running job count.
-                $count++;
-            }
             $runningTime = intval(Build::getRunningTime());
             $runningTime = $runningTime > 0 ? date('Y-m-d H:i:s', $runningTime) : '';
+
             $json = json_encode([
-                'count' => $count,
+                'isOrdered' => $isOrdered,
+                'orderTime' => $orderTime,
                 'isRunning' => $isRunning,
                 'runningTime' => $runningTime
             ]);
