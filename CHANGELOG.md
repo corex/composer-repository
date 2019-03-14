@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.2
+
+### Changed
+- Simplified ordering.
+
 ## 0.6.1
 
 ### Fixed
