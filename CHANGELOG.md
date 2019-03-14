@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.1
+
+### Fixed
+- Fixed long list of versions.
+
 ## 0.6.0
 
 ### Fixed

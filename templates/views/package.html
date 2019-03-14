@@ -6,7 +6,7 @@ Version
             aria-haspopup="true" aria-expanded="false">
         {{version}}
     </button>
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="overflow-y:auto;">
         {{#versions}}
         <a class="dropdown-item" href="{{url}}">{{version}}</a>
         {{/versions}}
