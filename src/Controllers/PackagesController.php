@@ -38,6 +38,13 @@ class PackagesController extends BaseController
                         'version' => $latestVersion,
                         'description' => $packageVersion->getValue('description')
                     ];
+                } else {
+                    $packages[] = [
+                        'url' =>  '',
+                        'signature' => $signature,
+                        'version' => '-',
+                        'description' => '-'
+                    ];
                 }
             }
 

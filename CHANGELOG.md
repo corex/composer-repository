@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.3
+
+### Fixed
+- Fixed loading package-service when signature not found.
+- Fixed detection of signature.
+
 ## 0.6.2
 
 ### Changed

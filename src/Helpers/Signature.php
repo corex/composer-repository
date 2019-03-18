@@ -48,13 +48,15 @@ class Signature
      */
     public static function split($signature)
     {
+        $signature = (string)$signature;
         $parts = [
             'vendor' => null,
             'package' => null
         ];
-        if ((string)$signature != '') {
-            $signatureParts = explode('/', (string)$signature);
-            if (count($signatureParts) == 2) {
+        if ($signature != '') {
+            $illegalParts = ['@', ':', '.git'];
+            $signatureParts = explode('/', $signature);
+            if (count($signatureParts) == 2 && !self::containsParts($signature, $illegalParts)) {
                 $parts = [
                     'vendor' => isset($signatureParts[0]) ? $signatureParts[0] : null,
                     'package' => isset($signatureParts[1]) ? $signatureParts[1] : null
@@ -62,5 +64,22 @@ class Signature
             }
         }
         return $parts;
+    }
+
+    /**
+     * Contains parts.
+     *
+     * @param string $signature
+     * @param array $parts
+     * @return bool
+     */
+    private static function containsParts($signature, array $parts)
+    {
+        foreach ($parts as $part) {
+            if (is_int(strpos($signature, $part))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

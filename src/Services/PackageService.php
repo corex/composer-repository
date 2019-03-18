@@ -19,10 +19,13 @@ class PackageService
     public function __construct($signature)
     {
         $this->signature = $signature;
+        $this->data = [];
 
         // Load data.
         $filename = PackagesService::load()->getPackageFilename($this->signature);
-        $this->data = File::getJson($filename);
+        if ($filename !== null) {
+            $this->data = File::getJson($filename);
+        }
     }
 
     /**
