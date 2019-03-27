@@ -156,6 +156,7 @@ class BuildCommand extends SatisBuildCommand
         $newVersions = $versionService->getNewVersions();
         $updatedPackages = array_keys($newVersions);
         if (count($newVersions) > 0 && !$versionService->isFirstRun()) {
+            $doSendMail = false;
             $mailer = new Mailer();
             $mailer->setHtml();
             $mailer->subject($config->getName() . ' - new/updated packages');
@@ -171,6 +172,7 @@ class BuildCommand extends SatisBuildCommand
                 $url = Url::build(['controller' => 'package', 'signature' => $signature]);
                 $line = '<a href="' . $url . '">' . $signature . '</a>';
                 $mailer->text($line);
+                $doSendMail = true;
             }
 
             $mailer->br();
@@ -184,9 +186,12 @@ class BuildCommand extends SatisBuildCommand
                 $url = Url::build(['controller' => 'package', 'signature' => $signature]);
                 $line = '<a href="' . $url . '">' . $signature . '</a>';
                 $mailer->text($line);
+                $doSendMail = true;
             }
 
-            $mailer->send();
+            if ($doSendMail) {
+                $mailer->send();
+            }
         }
 
         Console::info('Building and mapping done based on ' . $buildFilename);

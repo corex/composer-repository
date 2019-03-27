@@ -14,6 +14,11 @@ class Mailer
     private $variables = [];
     private $isHtml = false;
 
+    /**
+     * Mailer.
+     *
+     * @throws MailerException
+     */
     public function __construct()
     {
         $config = Config::load();
@@ -24,12 +29,25 @@ class Mailer
         $this->to = $config->getEmailTos();
     }
 
+    /**
+     * Subject.
+     *
+     * @param string $subject
+     * @return $this
+     */
     public function subject(string $subject)
     {
         $this->subject = $subject;
         return $this;
     }
 
+    /**
+     * Text.
+     *
+     * @param string $text
+     * @param bool $linebreak
+     * @return $this
+     */
     public function text(string $text, bool $linebreak = true)
     {
         $this->body .= $text;
@@ -39,23 +57,45 @@ class Mailer
         return $this;
     }
 
+    /**
+     * Br.
+     *
+     * @return $this
+     */
     public function br()
     {
         $this->body .= "\n";
         return $this;
     }
 
+    /**
+     * Body.
+     *
+     * @param string $body
+     * @return $this
+     */
     public function body(string $body)
     {
         $this->body = $body;
         return $this;
     }
 
+    /**
+     * Variable.
+     *
+     * @param string $name
+     * @param string $value
+     */
     public function variable(string $name, string $value)
     {
         $this->variables[$name] = $value;
     }
 
+    /**
+     * Variables.
+     *
+     * @param array $nameValues
+     */
     public function variables(array $nameValues)
     {
         foreach ($nameValues as $name => $value) {
@@ -63,11 +103,19 @@ class Mailer
         }
     }
 
+    /**
+     * Set html.
+     */
     public function setHtml()
     {
         $this->isHtml = true;
     }
 
+    /**
+     * Send.
+     *
+     * @throws MailerException
+     */
     public function send()
     {
         if (count($this->to) == 0) {

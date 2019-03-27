@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.4
+
+### Fixed
+- Fixed not sending mail unless there are either new or updated registered packages.
+
 ## 0.6.3
 
 ### Fixed
