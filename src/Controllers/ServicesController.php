@@ -15,10 +15,14 @@ class ServicesController extends BaseController
     public function render()
     {
         $service = $this->get('service');
-        $json = json_encode([]);
+        $response = json_encode([]);
 
         if ($service == 'order') {
-            Build::order();
+            $response = 0; // Indicate 'not ordered' as default.
+            if (!Build::isOrdered()) {
+                Build::order();
+                $response = 1; // Indicate 'ordered'.
+            }
         }
 
         if ($service == 'getOrderStatus') {
@@ -32,7 +36,7 @@ class ServicesController extends BaseController
             $runningTime = intval(Build::getRunningTime());
             $runningTime = $runningTime > 0 ? date('Y-m-d H:i:s', $runningTime) : '';
 
-            $json = json_encode([
+            $response = json_encode([
                 'isOrdered' => $isOrdered,
                 'orderTime' => $orderTime,
                 'isRunning' => $isRunning,
@@ -40,7 +44,7 @@ class ServicesController extends BaseController
             ]);
         }
 
-        print($json);
+        print($response);
         exit;
     }
 }

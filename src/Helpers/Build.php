@@ -33,8 +33,7 @@ class Build
      */
     public static function isOrdered()
     {
-        return File::exist(self::filename(self::FILENAME_ORDER))
-            && !File::exist(self::filename(self::FILENAME_RUNNING));
+        return File::exist(self::filename(self::FILENAME_ORDER));
     }
 
     /**
@@ -52,6 +51,7 @@ class Build
      */
     public static function markRunning()
     {
+        self::markOrderDone();
         File::put(self::filename('build-running'), time());
     }
 
@@ -61,7 +61,6 @@ class Build
     public static function markRunningDone()
     {
         File::delete(self::filename('build-running'));
-        self::markOrderDone();
     }
 
     /**

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.5
+
+### Changed
+- Changed ordering/running builds.
+
 ## 0.6.4
 
 ### Fixed
