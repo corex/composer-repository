@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.6
+
+### Fixed
+- Fixed sorting of version numbers.
+
 ## 0.6.5
 
 ### Changed
