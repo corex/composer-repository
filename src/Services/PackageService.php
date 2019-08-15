@@ -67,11 +67,17 @@ class PackageService
             }
             $versions = array_values($versions);
         }
+
+        // Sort versions.
+        uasort($versions, function ($version1, $version2) {
+            return version_compare($version1, $version2);
+        });
+
+        // Reverse versions.
         if ($reversed) {
-            rsort($versions);
-        } else {
-            sort($versions);
+            $versions = array_reverse($versions);
         }
+
         return $versions;
     }
 
