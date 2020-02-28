@@ -6,14 +6,19 @@ use CoRex\Composer\Repository\Config;
 use CoRex\Composer\Repository\Helpers\Build;
 use CoRex\Composer\Repository\Helpers\Console;
 use CoRex\Composer\Repository\Helpers\Signature;
+use CoRex\Composer\Repository\Services\NamespaceService;
 use CoRex\Composer\Repository\Services\PackagistService;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class AddCommand extends Command
 {
+    /** @var OutputInterface */
+    private $output;
+
     /**
      * Configure.
      */
@@ -32,6 +37,7 @@ class AddCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->output = $output;
         Console::header($this->getDescription());
 
         $signatureOrUrl = $input->getArgument('signature-or-repository-url');
@@ -93,10 +99,40 @@ class AddCommand extends Command
         if (empty($composerInformation['name'])) {
             Console::error('Not a valid composer package.');
         }
+
         $signature = $composerInformation['name'];
 
+        $isValid = true; // Default true.
+        $namespaceService = NamespaceService::load();
+        if ($namespaceService->hasNamespaces()) {
+            $namespace = null;
+            if (isset($composerInformation['autoload']['psr-4'])) {
+                $namespace = key($composerInformation['autoload']['psr-4']);
+            }
+
+            $isValid = $namespaceService->isValid($signature, (string)$namespace);
+        }
+
         // Add package.
-        Console::br();
+        if (!$isValid) {
+            $this->output->writeln('');
+            $message = 'Package name "' . $signature . '" or namespace "' . (string)$namespace . '"';
+            $this->output->writeln('<info>' . $message . '</info>');
+            $this->output->writeln('');
+            $this->output->writeln('<info>.... could not be matched against following list of namespaces.</info>');
+            $this->output->writeln('');
+
+            // Show list of namespaces.
+            $namespaces = $namespaceService->getAll();
+            $table = new Table($this->output);
+            $table->setHeaders(['Prefix', 'Namespace']);
+            $table->addRows($namespaces);
+            $table->render();
+
+            return false;
+        }
+
+        $this->output->writeln('');
         $config = Config::load();
         $isAdded = $config->addPackageUrl($signature, $repositoryUrl);
         if ($isAdded) {

@@ -5,6 +5,18 @@ namespace CoRex\Composer\Repository\Helpers;
 class Signature
 {
     /**
+     * Combine.
+     *
+     * @param string $vendor
+     * @param string $project
+     * @return string
+     */
+    public static function combine(string $vendor, string $project): string
+    {
+        return $vendor . '/' . $project;
+    }
+
+    /**
      * Vendor.
      *
      * @param string $signature

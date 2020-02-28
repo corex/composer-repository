@@ -65,6 +65,11 @@ class Application extends SatisApplication
         $commands[] = new Commands\Config\EmailToAddCommand();
         $commands[] = new Commands\Config\EmailToRemoveCommand();
 
+        // Namespace commands.
+        $commands[] = new Commands\Namespaces\AddCommand();
+        $commands[] = new Commands\Namespaces\RemoveCommand();
+        $commands[] = new Commands\Namespaces\ShowCommand();
+
         // Package commands.
         $commands[] = new Commands\Package\AddCommand();
         $commands[] = new Commands\Package\RemoveCommand();
